@@ -12,3 +12,17 @@ D:\Dad\Documents\CSharp\2018\HosMaint\HosMaint\obj\Debug\HosMaint.pdb
 D:\Dad\Documents\CSharp\2018\HosMaint\HosMaint\bin\Debug\MySql.Data.dll
 D:\Dad\Documents\CSharp\2018\HosMaint\HosMaint\bin\Debug\MySql.Data.xml
 D:\Dad\Documents\CSharp\2018\HosMaint\HosMaint\obj\Debug\HotsMaint.FormEdit.resources
+C:\Csharp\2018\HotsMaint-master\HosMaint\bin\Debug\HosMaint.exe.config
+C:\Csharp\2018\HotsMaint-master\HosMaint\bin\Debug\HosMaint.exe
+C:\Csharp\2018\HotsMaint-master\HosMaint\bin\Debug\HosMaint.pdb
+C:\Csharp\2018\HotsMaint-master\HosMaint\bin\Debug\MySql.Data.dll
+C:\Csharp\2018\HotsMaint-master\HosMaint\bin\Debug\MySql.Data.xml
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.csprojResolveAssemblyReference.cache
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.FormEdit.resources
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.FormLocationsGrid.resources
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.FormMain.resources
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HosMaint.Properties.Resources.resources
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.csproj.GenerateResource.Cache
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.csproj.CoreCompileInputs.cache
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HosMaint.exe
+C:\Csharp\2018\HotsMaint-master\HosMaint\obj\Debug\HosMaint.pdb

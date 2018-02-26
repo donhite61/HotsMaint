@@ -48,21 +48,12 @@ namespace HotsMaint
 
         private void dgvCell_DoubleClick(object sender, EventArgs e)
         {
-            var drv = bs.Current as DataRowView;
-            if (drv != null)
+            if (bs.Current is DataRowView drv)
             {
                 var row = drv.Row as DataRow;
                 Form formEdit = new FormEdit(row, loc);
                 formEdit.Show();
             }
-            
-        }
-
-        private void btn_AddLocation_Click(object sender, EventArgs e)
-        {
-            var row = ((DataTable)bs.DataSource).NewRow();
-            Form formEdit = new FormEdit(row, loc);
-            formEdit.Show();
         }
     }
 }

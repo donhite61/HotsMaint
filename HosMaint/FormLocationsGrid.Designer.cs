@@ -30,7 +30,6 @@
         {
             this.dgv1 = new System.Windows.Forms.DataGridView();
             this.chkbx_Inactive = new System.Windows.Forms.CheckBox();
-            this.btn_AddLocation = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgv1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,22 +52,11 @@
             this.chkbx_Inactive.Text = "Show Inactive";
             this.chkbx_Inactive.UseVisualStyleBackColor = true;
             // 
-            // btn_AddLocation
-            // 
-            this.btn_AddLocation.Location = new System.Drawing.Point(12, 12);
-            this.btn_AddLocation.Name = "btn_AddLocation";
-            this.btn_AddLocation.Size = new System.Drawing.Size(91, 30);
-            this.btn_AddLocation.TabIndex = 2;
-            this.btn_AddLocation.Text = "Add Location";
-            this.btn_AddLocation.UseVisualStyleBackColor = true;
-            this.btn_AddLocation.Click += new System.EventHandler(this.btn_AddLocation_Click);
-            // 
             // FormLocationsGrid
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(690, 335);
-            this.Controls.Add(this.btn_AddLocation);
             this.Controls.Add(this.chkbx_Inactive);
             this.Controls.Add(this.dgv1);
             this.Name = "FormLocationsGrid";
@@ -84,6 +72,5 @@
 
         private System.Windows.Forms.DataGridView dgv1;
         private System.Windows.Forms.CheckBox chkbx_Inactive;
-        private System.Windows.Forms.Button btn_AddLocation;
     }
 }

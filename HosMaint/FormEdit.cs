@@ -12,7 +12,7 @@ namespace HotsMaint
 {
     public partial class FormEdit : Form
     {
-        DataRow row;
+        public DataRow row;
         Locations loc;
         public FormEdit(DataRow _row, Locations _loc)
         {
@@ -23,19 +23,20 @@ namespace HotsMaint
 
         private void FormEdit_Load(object sender, EventArgs e)
         {
-            if (row.ItemArray[0].ToString() != "")
+            if(row.RowState == DataRowState.Unchanged)
                 SetUpControls();
+            else
+                chkbx_Inactive.Checked = false;
 
-            this.Closing += new CancelEventHandler(formEditClose);
+            this.Closing += new CancelEventHandler(FormEditClose);
             //btn_Delete.Click += new EventHandler(btn_Delete_Click);
-            //btn_Save.Click += new EventHandler(btn_Save_Click);
+            btn_Save.Click += new EventHandler(btn_Save_Click);
             //btn_Cancel.Click += new EventHandler(btn_Cancel_Click);
         }
 
 
-        private void formEditClose(object sender, CancelEventArgs e)
+        private void FormEditClose(object sender, CancelEventArgs e)
         {
-            //bs.EndEdit();
             //var tblMod = ((DataTable)bs.DataSource).GetChanges(DataRowState.Modified);
             //if (tblMod != null)
             //{
@@ -66,11 +67,39 @@ namespace HotsMaint
             chkbx_Inactive.Checked = Convert.ToBoolean(row.ItemArray[10]);
         }
 
-        //private void btn_Save_Click(object sender, EventArgs e)
-        //{
-        //    bs.EndEdit();
+        private void btn_Save_Click(object sender, EventArgs e)
+        {
+            UInt32 sqlId;
+            row.BeginEdit();
+            row[1] = txtbx_Code.Text;
+            row[2] = txtbx_Name.Text;
+            row[3] = txtbx_Add1.Text;
+            row[4] = txtbx_Add2.Text;
+            row[5] = txtbx_City.Text;
+            row[6] = txtbx_State.Text;
+            row[7] = txtbx_Zip.Text;
+            row[8] = txtbx_Phone.Text;
+            row[9] = txtbx_Email.Text;
+            row[10] = chkbx_Inactive.Checked;
+            row.EndEdit();
+            int Id;
+            if (int.TryParse(txtbx_Code.Text, out Id))
+            {
+                loc.UpdateRecord(row);
+            }
+            else
+            {
+                sqlId = loc.InsertRecord(row);
+                row.BeginEdit();
+                row[0] = Convert.ToUInt32(sqlId);
+                row.EndEdit();
+            }
+            var tbl = row.Table;
+            tbl.Rows.Add(row);
+            tbl.AcceptChanges();
+        }
         //    var tblAdd = ((DataTable)bs.DataSource).GetChanges(DataRowState.Added);
-        //    if(tblAdd != null)
+        //    if (tblAdd != null)
         //    {
         //        var sqlId = loc.InsertRecord(tblAdd.Rows[0]);
         //        var tbl = ((DataTable)bs.DataSource);

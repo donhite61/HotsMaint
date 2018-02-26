@@ -67,14 +67,14 @@ namespace HotsMaint
         public UInt32 InsertRecord(DataRow _row)
         {
             string sql = "INSERT INTO locations " +
-                    "(loc_Code,loc_Description,loc_Address,loc_Address2,loc_City,loc_State,loc_Zip,loc_Phone,loc_Email,loc_Inactive)" +
-                    "Values(?Code,?Description,?Add,?Add2,?City,?State,?Zip,?Phone,?Email,?Inactive)";
+                    "(loc_Code,loc_Name,loc_Address,loc_Address2,loc_City,loc_State,loc_Zip,loc_Phone,loc_Email,loc_Inactive)" +
+                    "Values(?Code,?Name,?Add,?Add2,?City,?State,?Zip,?Phone,?Email,?Inactive)";
 
             using (var conn = new MySqlConnection(ConnString))
             using (var cmd = new MySqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
-                cmd.Parameters.AddWithValue("?Description", _row[2].ToString());
+                cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
                 cmd.Parameters.AddWithValue("?Add", _row.ItemArray[3].ToString());
                 cmd.Parameters.AddWithValue("?Add2", _row.ItemArray[4].ToString());
                 cmd.Parameters.AddWithValue("?City", _row.ItemArray[5].ToString());
@@ -95,7 +95,7 @@ namespace HotsMaint
         public bool UpdateRecord(DataRow _row)
         {
             string sql = "UPDATE locations " +
-                    "SET loc_Code=?Code,loc_Description=?Description,loc_Address=?Add,loc_Address2=?Add2,loc_City=?City," +
+                    "SET loc_Code=?Code,loc_Name=?Name,loc_Address=?Add,loc_Address2=?Add2,loc_City=?City," +
                     "loc_State=?State,loc_Zip=?Zip,loc_Phone=?Phone,loc_Email=?Email,loc_Inactive=?Inactive " +
                     "WHERE loc_Id = ?Id";
 
@@ -104,7 +104,7 @@ namespace HotsMaint
             {
                 cmd.Parameters.AddWithValue("?Id", Convert.ToUInt32(_row.ItemArray[0]));
                 cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
-                cmd.Parameters.AddWithValue("?Description", _row[2].ToString());
+                cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
                 cmd.Parameters.AddWithValue("?Add", _row.ItemArray[3].ToString());
                 cmd.Parameters.AddWithValue("?Add2", _row.ItemArray[4].ToString());
                 cmd.Parameters.AddWithValue("?City", _row.ItemArray[5].ToString());
