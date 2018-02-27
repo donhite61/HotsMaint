@@ -51,7 +51,12 @@ namespace HotsMaint
             if (bs.Current is DataRowView drv)
             {
                 var row = drv.Row as DataRow;
-                Form formEdit = new FormEdit(row, loc);
+                if (row.RowState == DataRowState.Detached)
+                {
+                    bs.AddNew();
+                    bs.Position = bs.Count - 1;
+                }
+                Form formEdit = new FormEdit(bs, loc);
                 formEdit.Show();
             }
         }
