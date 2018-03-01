@@ -5,24 +5,34 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using MySql.Data.MySqlClient;
+using System.Windows.Forms;
 
 
 namespace HotsMaint
 {
     public class Locations
     {
-        string ConnString = "server=69.89.31.188;user=hitephot_don;database=hitephot_pos;port=3306;password=Hite1985;";
-        public DataTable tbl { get; set; }
+        static string ConnString = "server=69.89.31.188;user=hitephot_don;database=hitephot_pos;port=3306;password=Hite1985;";
+        public DataTable Tbl { get; set; }
 
         public Locations()
         {
-            tbl = GetDataTable("locations");
+            Tbl = GetDataTable("locations");
         }
 
-        public DataTable GetDataTable(string _tableName)
+        public static DataSet GetDataSet()
+        {
+            MySqlConnection connection = new MySqlConnection(ConnString);
+
+            DataSet dataSet = new DataSet();
+            dataSet.Tables.Add(GetDataTable("locations"));
+            return dataSet;
+        }
+
+        public static DataTable GetDataTable(string _tableName)
         {
             string sql = "SELECT * FROM " + _tableName;
-            var table = new DataTable();
+            var table = new DataTable {TableName = "locations"};
             table.Columns.Add("Id", typeof(UInt32));
             table.Columns.Add("Code", typeof(string));
             table.Columns.Add("Name", typeof(string));
@@ -64,7 +74,7 @@ namespace HotsMaint
             return table;
         }
 
-        public UInt32 InsertRecord(DataRow _row)
+        public static UInt32 InsertRecord(DataRow _row)
         {
             string sql = "INSERT INTO locations " +
                     "(loc_Code,loc_Name,loc_Address,loc_Address2,loc_City,loc_State,loc_Zip,loc_Phone,loc_Email,loc_Inactive)" +
@@ -92,7 +102,7 @@ namespace HotsMaint
             }
         }
 
-        public bool UpdateRecord(DataRow _row)
+        public static bool UpdateRecord(DataRow _row)
         {
             string sql = "UPDATE locations " +
                     "SET loc_Code=?Code,loc_Name=?Name,loc_Address=?Add,loc_Address2=?Add2,loc_City=?City," +
@@ -121,7 +131,7 @@ namespace HotsMaint
             return true;
         }
 
-        public bool DeleteRecord(UInt32 _id)
+        public static bool DeleteRecord(UInt32 _id)
         {
             //todo
             //if Child records exist
@@ -138,7 +148,7 @@ namespace HotsMaint
             return true;
         }
 
-        public string GetNameFromCode(string code)
+        public static string GetNameFromCode(string code)
         {
             string sql = "SELECT loc_Description FROM locations WHERE loc_Code = ?code LIMIT 1";
             using (var conn = new MySqlConnection(ConnString))

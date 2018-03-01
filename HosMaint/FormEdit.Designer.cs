@@ -55,7 +55,7 @@
             // lbl_Id
             // 
             this.lbl_Id.AutoSize = true;
-            this.lbl_Id.Location = new System.Drawing.Point(51, 8);
+            this.lbl_Id.Location = new System.Drawing.Point(72, 8);
             this.lbl_Id.Name = "lbl_Id";
             this.lbl_Id.Size = new System.Drawing.Size(16, 13);
             this.lbl_Id.TabIndex = 0;
@@ -202,7 +202,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(73, 8);
+            this.label8.Location = new System.Drawing.Point(48, 8);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(16, 13);
             this.label8.TabIndex = 0;

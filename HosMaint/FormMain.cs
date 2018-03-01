@@ -19,12 +19,13 @@ namespace HotsMaint
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            btn_Locations.Click += new EventHandler(btn_Locations_Click);
+            btn_Locations.Click += new EventHandler(Btn_Locations_Click);
         }
 
-        private void btn_Locations_Click(object sender, EventArgs e)
+        private void Btn_Locations_Click(object sender, EventArgs e)
         {
-            Form locGridForm = new FormLocationsGrid();
+            var ds = Locations.GetDataSet();
+            Form locGridForm = new FormLocationsGrid(ds);
             locGridForm.Show();
         }
 

@@ -12,33 +12,43 @@ namespace HotsMaint
 {
     public partial class FormLocationsGrid : Form
     {
-        BindingSource bs = new BindingSource();
-        Locations loc;
-        public FormLocationsGrid()
+        public BindingSource bs;
+
+        public FormLocationsGrid(DataSet _ds)
         {
+            var dataSet = _ds;
+            bs = new BindingSource()
+            {
+                DataSource = dataSet,
+                DataMember = "locations",
+                Filter = "Inactive = 0"
+            };
             InitializeComponent();
         }
 
         private void FormLocationsGrid_Load(object sender, EventArgs e)
         {
-            loc = new Locations();
-            bs.DataSource = loc.tbl;
-            bs.Filter = "Inactive = 0";
-
             dgv1.DataSource = bs;
+            SetDataGridviewProperties();
+            dgv1.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(DgvCell_DoubleClick);
+            chkbx_Inactive.CheckedChanged += new EventHandler(Chkbx_Inactive_CheckedChanged);
+        }
 
+        private void SetDataGridviewProperties()
+        {
             dgv1.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgv1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            dgv1.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(dgvCell_DoubleClick);
-            chkbx_Inactive.CheckedChanged += new EventHandler(chkbx_Inactive_CheckedChanged);
+            dgv1.AllowUserToDeleteRows = false;
             chkbx_Inactive.Checked = false;
             dgv1.Columns[0].Visible = false;
             dgv1.Columns[4].Visible = false;
+            dgv1.Columns[7].Visible = false;
+            dgv1.Columns[8].Visible = false;
             dgv1.Columns[9].Visible = false;
         }
 
-        private void chkbx_Inactive_CheckedChanged(object sender, EventArgs e)
+        private void Chkbx_Inactive_CheckedChanged(object sender, EventArgs e)
         {
             if (chkbx_Inactive.Checked)
                 bs.Filter = null;
@@ -46,19 +56,10 @@ namespace HotsMaint
                 bs.Filter = "Inactive = 0";
         }
 
-        private void dgvCell_DoubleClick(object sender, EventArgs e)
+        private void DgvCell_DoubleClick(object sender, EventArgs e)
         {
-            if (bs.Current is DataRowView drv)
-            {
-                var row = drv.Row as DataRow;
-                if (row.RowState == DataRowState.Detached)
-                {
-                    bs.AddNew();
-                    bs.Position = bs.Count - 1;
-                }
-                Form formEdit = new FormEdit(bs, loc);
+                Form formEdit = new FormEdit(bs);
                 formEdit.Show();
-            }
         }
     }
 }
