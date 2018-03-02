@@ -40,9 +40,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.txtbx_City = new System.Windows.Forms.TextBox();
             this.txtbx_State = new System.Windows.Forms.TextBox();
-            this.txtbx_Zip = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtbx_Phone = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtbx_Email = new System.Windows.Forms.TextBox();
             this.chkbx_Inactive = new System.Windows.Forms.CheckBox();
@@ -50,6 +48,8 @@
             this.btn_Save = new System.Windows.Forms.Button();
             this.btn_Cancel = new System.Windows.Forms.Button();
             this.btn_Delete = new System.Windows.Forms.Button();
+            this.txtbx_Phone = new System.Windows.Forms.MaskedTextBox();
+            this.txtbx_Zip = new System.Windows.Forms.MaskedTextBox();
             this.SuspendLayout();
             // 
             // lbl_Id
@@ -79,7 +79,7 @@
             // 
             // txtbx_Name
             // 
-            this.txtbx_Name.Location = new System.Drawing.Point(73, 68);
+            this.txtbx_Name.Location = new System.Drawing.Point(72, 72);
             this.txtbx_Name.Name = "txtbx_Name";
             this.txtbx_Name.Size = new System.Drawing.Size(298, 20);
             this.txtbx_Name.TabIndex = 2;
@@ -104,7 +104,7 @@
             // 
             // txtbx_Add1
             // 
-            this.txtbx_Add1.Location = new System.Drawing.Point(73, 94);
+            this.txtbx_Add1.Location = new System.Drawing.Point(72, 97);
             this.txtbx_Add1.Name = "txtbx_Add1";
             this.txtbx_Add1.Size = new System.Drawing.Size(298, 20);
             this.txtbx_Add1.TabIndex = 3;
@@ -120,7 +120,8 @@
             // 
             // txtbx_Add2
             // 
-            this.txtbx_Add2.Location = new System.Drawing.Point(73, 120);
+            this.txtbx_Add2.BackColor = System.Drawing.SystemColors.Menu;
+            this.txtbx_Add2.Location = new System.Drawing.Point(72, 122);
             this.txtbx_Add2.Name = "txtbx_Add2";
             this.txtbx_Add2.Size = new System.Drawing.Size(298, 20);
             this.txtbx_Add2.TabIndex = 1;
@@ -137,24 +138,17 @@
             // 
             // txtbx_City
             // 
-            this.txtbx_City.Location = new System.Drawing.Point(73, 146);
+            this.txtbx_City.Location = new System.Drawing.Point(73, 152);
             this.txtbx_City.Name = "txtbx_City";
             this.txtbx_City.Size = new System.Drawing.Size(169, 20);
             this.txtbx_City.TabIndex = 4;
             // 
             // txtbx_State
             // 
-            this.txtbx_State.Location = new System.Drawing.Point(248, 146);
+            this.txtbx_State.Location = new System.Drawing.Point(248, 152);
             this.txtbx_State.Name = "txtbx_State";
-            this.txtbx_State.Size = new System.Drawing.Size(35, 20);
+            this.txtbx_State.Size = new System.Drawing.Size(32, 20);
             this.txtbx_State.TabIndex = 5;
-            // 
-            // txtbx_Zip
-            // 
-            this.txtbx_Zip.Location = new System.Drawing.Point(289, 146);
-            this.txtbx_Zip.Name = "txtbx_Zip";
-            this.txtbx_Zip.Size = new System.Drawing.Size(82, 20);
-            this.txtbx_Zip.TabIndex = 6;
             // 
             // label6
             // 
@@ -164,13 +158,6 @@
             this.label6.Size = new System.Drawing.Size(38, 13);
             this.label6.TabIndex = 0;
             this.label6.Text = "Phone";
-            // 
-            // txtbx_Phone
-            // 
-            this.txtbx_Phone.Location = new System.Drawing.Point(73, 184);
-            this.txtbx_Phone.Name = "txtbx_Phone";
-            this.txtbx_Phone.Size = new System.Drawing.Size(298, 20);
-            this.txtbx_Phone.TabIndex = 7;
             // 
             // label7
             // 
@@ -183,7 +170,7 @@
             // 
             // txtbx_Email
             // 
-            this.txtbx_Email.Location = new System.Drawing.Point(73, 210);
+            this.txtbx_Email.Location = new System.Drawing.Point(72, 208);
             this.txtbx_Email.Name = "txtbx_Email";
             this.txtbx_Email.Size = new System.Drawing.Size(298, 20);
             this.txtbx_Email.TabIndex = 8;
@@ -222,7 +209,7 @@
             this.btn_Cancel.Location = new System.Drawing.Point(146, 266);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(96, 29);
-            this.btn_Cancel.TabIndex = 9;
+            this.btn_Cancel.TabIndex = 10;
             this.btn_Cancel.Text = "Cancel";
             this.btn_Cancel.UseVisualStyleBackColor = true;
             // 
@@ -231,26 +218,42 @@
             this.btn_Delete.Location = new System.Drawing.Point(25, 266);
             this.btn_Delete.Name = "btn_Delete";
             this.btn_Delete.Size = new System.Drawing.Size(96, 29);
-            this.btn_Delete.TabIndex = 9;
+            this.btn_Delete.TabIndex = 11;
             this.btn_Delete.Text = "Delete";
             this.btn_Delete.UseVisualStyleBackColor = true;
+            // 
+            // txtbx_Phone
+            // 
+            this.txtbx_Phone.Location = new System.Drawing.Point(72, 184);
+            this.txtbx_Phone.Mask = "(999) 000-0000";
+            this.txtbx_Phone.Name = "txtbx_Phone";
+            this.txtbx_Phone.Size = new System.Drawing.Size(100, 20);
+            this.txtbx_Phone.TabIndex = 7;
+            // 
+            // txtbx_Zip
+            // 
+            this.txtbx_Zip.Location = new System.Drawing.Point(288, 152);
+            this.txtbx_Zip.Mask = "00000-9999";
+            this.txtbx_Zip.Name = "txtbx_Zip";
+            this.txtbx_Zip.Size = new System.Drawing.Size(80, 20);
+            this.txtbx_Zip.TabIndex = 6;
             // 
             // FormEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(403, 307);
+            this.Controls.Add(this.txtbx_Zip);
+            this.Controls.Add(this.txtbx_Phone);
             this.Controls.Add(this.btn_Delete);
             this.Controls.Add(this.btn_Cancel);
             this.Controls.Add(this.btn_Save);
             this.Controls.Add(this.chkbx_Inactive);
-            this.Controls.Add(this.txtbx_Zip);
             this.Controls.Add(this.txtbx_State);
             this.Controls.Add(this.txtbx_City);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtbx_Email);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.txtbx_Phone);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtbx_Add2);
             this.Controls.Add(this.label4);
@@ -284,9 +287,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtbx_City;
         private System.Windows.Forms.TextBox txtbx_State;
-        private System.Windows.Forms.TextBox txtbx_Zip;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtbx_Phone;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtbx_Email;
         private System.Windows.Forms.CheckBox chkbx_Inactive;
@@ -294,5 +295,7 @@
         private System.Windows.Forms.Button btn_Save;
         private System.Windows.Forms.Button btn_Cancel;
         private System.Windows.Forms.Button btn_Delete;
+        private System.Windows.Forms.MaskedTextBox txtbx_Phone;
+        private System.Windows.Forms.MaskedTextBox txtbx_Zip;
     }
 }

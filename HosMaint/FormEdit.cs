@@ -29,25 +29,9 @@ namespace HotsMaint
 
             SetUpControls();
             this.Closing += new CancelEventHandler(FormEditClose);
-            //btn_Delete.Click += new EventHandler(btn_Delete_Click);
+            btn_Delete.Click += new EventHandler(btn_Delete_Click);
             btn_Save.Click += new EventHandler(Btn_Save_Click);
             btn_Cancel.Click += new EventHandler(btn_Cancel_Click);
-        }
-
-        private void FormEditClose(object sender, CancelEventArgs e)
-        {
-            bs.EndEdit();
-            if (row.RowState != DataRowState.Unchanged)
-            {
-                var DialogResult = MessageBox.Show("You have unsaved changes, Do you want to save them?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
-                if (DialogResult == DialogResult.No)
-                    btn_Cancel_Click(sender, new EventArgs());
-
-                else if (DialogResult == DialogResult.Yes)
-                    Btn_Save_Click(sender, new EventArgs());
-                else
-                    e.Cancel = true;
-            }
         }
 
         private void SetUpControls()
@@ -63,6 +47,19 @@ namespace HotsMaint
             txtbx_Phone.DataBindings.Add(new Binding("Text", bs, "Phone", true));
             txtbx_Email.DataBindings.Add(new Binding("Text", bs, "Email", true));
             chkbx_Inactive.DataBindings.Add(new Binding("Checked", bs, "Inactive", true));
+        }
+
+        private void btn_Delete_Click(object sender, EventArgs e)
+        {
+            bs.RemoveCurrent();
+            Close();
+        }
+
+        private void btn_Cancel_Click(object sender, EventArgs e)
+        {
+            bs.EndEdit();
+            row.Table.RejectChanges();
+            Close();
         }
 
         private void Btn_Save_Click(object sender, EventArgs e)
@@ -90,11 +87,21 @@ namespace HotsMaint
             Close();
         }
 
-        private void btn_Cancel_Click(object sender, EventArgs e)
+        private void FormEditClose(object sender, CancelEventArgs e)
         {
             bs.EndEdit();
-            row.Table.RejectChanges();
-            Close();
+            if (row.RowState != DataRowState.Unchanged)
+            {
+                var DialogResult = MessageBox.Show("You have unsaved changes, Do you want to save them?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
+                if (DialogResult == DialogResult.No)
+                    btn_Cancel_Click(sender, new EventArgs());
+
+                else if (DialogResult == DialogResult.Yes)
+                    Btn_Save_Click(sender, new EventArgs());
+                else
+                    e.Cancel = true;
+            }
         }
+
     }
 }
