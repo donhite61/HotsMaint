@@ -69,15 +69,6 @@ namespace HotsMaint
         {
             if (row.RowState == DataRowState.Detached)
             {
-                //row[1] = txtbx_Code.Text;
-                //row[2] = txtbx_Name.Text;
-                //row[3] = txtbx_Add1.Text;
-                //row[4] = txtbx_Add2.Text;
-                //row[5] = txtbx_City.Text;
-                //row[6] = txtbx_State.Text;
-                //row[7] = txtbx_Zip.Text;
-                //row[8] = txtbx_Phone.Text;
-                //row[9] = txtbx_Email.Text;
                 row[10] = chkbx_Inactive.Checked;
                 row[0] = Locations.InsertRecord(row);
                 bs.EndEdit();
