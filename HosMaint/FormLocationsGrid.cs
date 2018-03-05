@@ -12,15 +12,17 @@ namespace HotsMaint
 {
     public partial class FormLocationsGrid : Form
     {
-        public BindingSource bs;
+        private BindingSource bs;
+        private ITable locTable;
 
-        public FormLocationsGrid(DataSet _ds)
+        public FormLocationsGrid(ITable _table)
         {
-            var dataSet = _ds;
+            locTable = _table;
+            var dataSet = locTable.DataSet;
             bs = new BindingSource()
             {
                 DataSource = dataSet,
-                DataMember = "locations",
+                DataMember = dataSet.Tables[0].TableName,
                 Filter = "Inactive = 0"
             };
             InitializeComponent();
@@ -58,8 +60,10 @@ namespace HotsMaint
 
         private void DgvCell_DoubleClick(object sender, EventArgs e)
         {
-                Form formEdit = new FormEdit(bs);
-                formEdit.Show();
+            
+
+            Form formEdit = new FormEdit(locTable, bs);
+            formEdit.Show();
         }
     }
 }

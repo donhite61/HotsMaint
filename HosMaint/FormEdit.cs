@@ -12,23 +12,27 @@ namespace HotsMaint
 {
     public partial class FormEdit : Form
     {
-        BindingSource bs;
-        DataRow row;
+        private ITable locTable;
+        private BindingSource bs;
+        private DataRow row;
 
-        public FormEdit(BindingSource _bs)
+        public FormEdit(ITable _table, BindingSource _bs)
         {
+            locTable = _table;
             bs = _bs;
             InitializeComponent();
         }
 
         private void FormEdit_Load(object sender, EventArgs e)
         {
-            
+            if (Sql.TableNeedsRefresh(locTable))
+                Close();
+
             if (bs.Current is DataRowView drv)
                 row = drv.Row as DataRow;
 
             SetUpControls();
-            this.Closing += new CancelEventHandler(FormEditClose);
+            Closing += new CancelEventHandler(FormEditClose);
             btn_Delete.Click += new EventHandler(btn_Delete_Click);
             btn_Save.Click += new EventHandler(Btn_Save_Click);
             btn_Cancel.Click += new EventHandler(btn_Cancel_Click);
@@ -36,23 +40,23 @@ namespace HotsMaint
 
         private void SetUpControls()
         {
-            lbl_Id.DataBindings.Add(new Binding("Text", bs, "Id", true));
-            txtbx_Code.DataBindings.Add(new Binding("Text", bs, "Code", true));
-            txtbx_Name.DataBindings.Add(new Binding("Text", bs, "Name", true));
-            txtbx_Add1.DataBindings.Add(new Binding("Text", bs, "Address", true));
-            txtbx_Add2.DataBindings.Add(new Binding("Text", bs, "Address2", true));
-            txtbx_City.DataBindings.Add(new Binding("Text", bs, "City", true));
-            txtbx_State.DataBindings.Add(new Binding("Text", bs, "State", true));
-            txtbx_Zip.DataBindings.Add(new Binding("Text", bs, "Zip", true));
-            txtbx_Phone.DataBindings.Add(new Binding("Text", bs, "Phone", true));
-            txtbx_Email.DataBindings.Add(new Binding("Text", bs, "Email", true));
+            lbl_Id.DataBindings.Add(new Binding("Text", bs, "Id", false));
+            txtbx_Code.DataBindings.Add(new Binding("Text", bs, "Code", false));
+            txtbx_Name.DataBindings.Add(new Binding("Text", bs, "Name", false));
+            txtbx_Add1.DataBindings.Add(new Binding("Text", bs, "Address", false));
+            txtbx_Add2.DataBindings.Add(new Binding("Text", bs, "Address2", false));
+            txtbx_City.DataBindings.Add(new Binding("Text", bs, "City", false));
+            txtbx_State.DataBindings.Add(new Binding("Text", bs, "State", false));
+            txtbx_Zip.DataBindings.Add(new Binding("Text", bs, "Zip", false));
+            txtbx_Phone.DataBindings.Add(new Binding("Text", bs, "Phone", false));
+            txtbx_Email.DataBindings.Add(new Binding("Text", bs, "Email", false));
             chkbx_Inactive.DataBindings.Add(new Binding("Checked", bs, "Inactive", true));
         }
 
         private void btn_Delete_Click(object sender, EventArgs e)
         {
             bs.EndEdit();
-            Locations.DeleteRecord(Convert.ToUInt32(row.ItemArray[0]));
+            locTable.DeleteRecord(Convert.ToUInt32(row.ItemArray[0]));
             bs.RemoveCurrent();
             ((DataSet)bs.DataSource).AcceptChanges();
             Close();
@@ -70,15 +74,14 @@ namespace HotsMaint
             if (row.RowState == DataRowState.Detached)
             {
                 row[10] = chkbx_Inactive.Checked;
-                row[0] = Locations.InsertRecord(row);
+                row[0] = locTable.InsertRecord(row);
                 bs.EndEdit();
             }
             bs.EndEdit();
             if (row.RowState == DataRowState.Modified)
-                Locations.UpdateRecord(row);
+                locTable.UpdateRecord(row);
 
             ((DataSet)bs.DataSource).AcceptChanges();
-
             Close();
         }
 

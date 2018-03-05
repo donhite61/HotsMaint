@@ -24,8 +24,10 @@ namespace HotsMaint
 
         private void Btn_Locations_Click(object sender, EventArgs e)
         {
-            var ds = Locations.GetDataSet();
-            Form locGridForm = new FormLocationsGrid(ds);
+            ITable loc = new Loc();
+           // var ds = Locations.GetDataSet();
+            //Form locGridForm = new FormLocationsGrid(ds);
+            Form locGridForm = new FormLocationsGrid(loc);
             locGridForm.Show();
         }
 
