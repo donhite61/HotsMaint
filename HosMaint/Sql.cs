@@ -27,6 +27,21 @@ namespace HotsMaint
             }
         }
 
+        public static DateTime SetTableUpdateTime(string tblName)
+        {
+            using (var cmd = new MySqlCommand())
+            {
+                cmd.CommandText = "SELECT NOW() FROM DUAL";
+                cmd.Connection = new MySqlConnection(ConnString);
+                cmd.Parameters.AddWithValue("?tblName", tblName);
+                cmd.Connection.Open();
+                var result = cmd.ExecuteScalar().ToString();
+                DateTime GetTableUpdateTime;
+                DateTime.TryParse(result, out GetTableUpdateTime);
+                return GetTableUpdateTime;
+            }
+        }
+
         public static bool TableNeedsRefresh(ITable _table)
         {
             var locTime = _table.TblUpdTime;
@@ -35,7 +50,7 @@ namespace HotsMaint
             {
                 _table.DataSet.Tables[0].Clear();
                 FillTable(_table.DataSet.Tables[0]);
-                _table.TblUpdTime = Sql.GetTableUpdateTime(_table.DataSet.Tables[0].TableName);
+                _table.TblUpdTime = GetTableUpdateTime(_table.DataSet.Tables[0].TableName);
                 return true;
             }
             return false;
@@ -76,25 +91,45 @@ namespace HotsMaint
 
         public static UInt32 InsertRecord(MySqlCommand cmd)
         {
-            using (cmd)
+            try
             {
-                cmd.Connection = new MySqlConnection(ConnString);
-                cmd.Connection.Open();
-                var result = cmd.ExecuteNonQuery();
-                UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
-                return mySqlId;
+                using (cmd)
+                {
+                    cmd.Connection = new MySqlConnection(ConnString);
+                    cmd.Connection.Open();
+                    if (cmd.ExecuteNonQuery() == 1)
+                    {
+                        UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
+                        return mySqlId;
+                    }
+                    return 0;
+                }
+            }
+            catch (MySqlException e)
+            {
+                System.Windows.Forms.MessageBox.Show("WebServer Error, The record was not addded"+ "\r\n"+ "\r\n"+e);
+                return 0;
             }
         }
 
         public static bool UpdateRecord(MySqlCommand cmd)
         {
-            using (cmd)
+            try
             {
-                cmd.Connection = new MySqlConnection(ConnString);
-                cmd.Connection.Open();
-                var result = cmd.ExecuteNonQuery();
+                using (cmd)
+                {
+                    cmd.Connection = new MySqlConnection(ConnString);
+                    cmd.Connection.Open();
+                    if (cmd.ExecuteNonQuery() == 1)
+                        return true;
+                }
+                return false;
             }
-            return true;
+            catch (MySqlException e)
+            {
+                System.Windows.Forms.MessageBox.Show("WebServer Error, The record was not saved" + "\r\n" + "\r\n" + e);
+                return false;
+            }
         }
 
         public static bool DeleteRecord(MySqlCommand cmd)
@@ -102,13 +137,22 @@ namespace HotsMaint
             //todo
             //if Child records exist
             // e.Cancel = true
-            using (cmd)
+            try
             {
-                cmd.Connection = new MySqlConnection(ConnString);
-                cmd.Connection.Open();
-                var result = cmd.ExecuteNonQuery();
+                using (cmd)
+                {
+                    cmd.Connection = new MySqlConnection(ConnString);
+                    cmd.Connection.Open();
+                    if (cmd.ExecuteNonQuery() == 1)
+                        return true;
+                }
+                return false;
             }
-            return true;
+            catch (MySqlException e)
+            {
+                System.Windows.Forms.MessageBox.Show("WebServer Error, The record was not deleted" + "\r\n" + "\r\n" + e);
+                return false;
+            }
         }
 
         public static string SafeGetString(MySqlDataReader reader, int colIndex)

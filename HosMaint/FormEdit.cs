@@ -26,7 +26,10 @@ namespace HotsMaint
         private void FormEdit_Load(object sender, EventArgs e)
         {
             if (Sql.TableNeedsRefresh(locTable))
+            {
+                MessageBox.Show("data was updated online, reloading");
                 Close();
+            }   
 
             if (bs.Current is DataRowView drv)
                 row = drv.Row as DataRow;
@@ -55,8 +58,11 @@ namespace HotsMaint
 
         private void btn_Delete_Click(object sender, EventArgs e)
         {
+            // todo check for child records
             bs.EndEdit();
-            locTable.DeleteRecord(Convert.ToUInt32(row.ItemArray[0]));
+            if(!locTable.DeleteRecord(Convert.ToUInt32(row.ItemArray[0])))
+                btn_Cancel_Click(sender, new EventArgs());
+
             bs.RemoveCurrent();
             ((DataSet)bs.DataSource).AcceptChanges();
             Close();
@@ -71,15 +77,21 @@ namespace HotsMaint
 
         private void Btn_Save_Click(object sender, EventArgs e)
         {
+            //todo check for duplicate code
             if (row.RowState == DataRowState.Detached)
             {
                 row[10] = chkbx_Inactive.Checked;
-                row[0] = locTable.InsertRecord(row);
-                bs.EndEdit();
+                var result = locTable.InsertRecord(row);
+                if (result == 0)
+                    btn_Cancel_Click(sender, new EventArgs());
+                else
+                    row[0] = result;
             }
+
             bs.EndEdit();
             if (row.RowState == DataRowState.Modified)
-                locTable.UpdateRecord(row);
+                if(!locTable.UpdateRecord(row))
+                    btn_Cancel_Click(sender, new EventArgs());
 
             ((DataSet)bs.DataSource).AcceptChanges();
             Close();
