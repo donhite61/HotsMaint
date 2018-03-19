@@ -12,27 +12,23 @@ namespace HotsMaint
 {
     public partial class FormEdit : Form
     {
-        private ITable locTable;
-        private BindingSource bs;
+        private Model loc;
         private DataRow row;
+        private BindingSource bs;
 
-        public FormEdit(ITable _table, BindingSource _bs)
+        public FormEdit(Model _loc)
         {
-            locTable = _table;
-            bs = _bs;
+            loc = _loc;
             InitializeComponent();
         }
 
         private void FormEdit_Load(object sender, EventArgs e)
         {
-            if (Sql.TableNeedsRefresh(locTable))
+            if (loc.BSource.Current is DataRowView drv)
             {
-                MessageBox.Show("data was updated online, reloading");
-                Close();
-            }   
-
-            if (bs.Current is DataRowView drv)
                 row = drv.Row as DataRow;
+                bs = loc.BSource;
+            }
 
             SetUpControls();
             Closing += new CancelEventHandler(FormEditClose);
@@ -54,17 +50,21 @@ namespace HotsMaint
             txtbx_Phone.DataBindings.Add(new Binding("Text", bs, "Phone", false));
             txtbx_Email.DataBindings.Add(new Binding("Text", bs, "Email", false));
             chkbx_Inactive.DataBindings.Add(new Binding("Checked", bs, "Inactive", true));
+            lbl_Timestamp.DataBindings.Add(new Binding("Text", bs, "Timestamp", true));
+
+            if (row.RowState == DataRowState.Detached)// new record
+                btn_Delete.Enabled = false;
         }
 
         private void btn_Delete_Click(object sender, EventArgs e)
         {
-            // todo check for child records
             bs.EndEdit();
-            if(!locTable.DeleteRecord(Convert.ToUInt32(row.ItemArray[0])))
-                btn_Cancel_Click(sender, new EventArgs());
-
-            bs.RemoveCurrent();
-            ((DataSet)bs.DataSource).AcceptChanges();
+            loc.CurRecId = Convert.ToUInt32(row.ItemArray[0]);
+            if (loc.DeleteRecord(loc))
+            {
+                bs.RemoveCurrent();
+                ((DataSet)bs.DataSource).AcceptChanges();
+            }
             Close();
         }
 
@@ -77,21 +77,15 @@ namespace HotsMaint
 
         private void Btn_Save_Click(object sender, EventArgs e)
         {
-            //todo check for duplicate code
-            if (row.RowState == DataRowState.Detached)
+            if (row.RowState == DataRowState.Detached)// new record
             {
                 row[10] = chkbx_Inactive.Checked;
-                var result = locTable.InsertRecord(row);
-                if (result == 0)
-                    btn_Cancel_Click(sender, new EventArgs());
-                else
-                    row[0] = result;
+                row[0] = loc.InsertRecord(row);
+                bs.EndEdit();
             }
-
             bs.EndEdit();
-            if (row.RowState == DataRowState.Modified)
-                if(!locTable.UpdateRecord(row))
-                    btn_Cancel_Click(sender, new EventArgs());
+            if (row.RowState == DataRowState.Modified)// record changed
+                loc.UpdateRecord(row);
 
             ((DataSet)bs.DataSource).AcceptChanges();
             Close();
@@ -113,5 +107,18 @@ namespace HotsMaint
             }
         }
 
+        private void txtbx_Code_Validating(object sender, CancelEventArgs e)
+        {
+            var newCode = ((TextBox)sender).Text;
+            var oldCode = row.ItemArray[1].ToString();
+            if (newCode == oldCode)
+                return;
+
+            if(loc.CodeHasBeenUsed(loc, newCode))
+            {
+                txtbx_Code.Text = oldCode;
+                e.Cancel = true;
+            }
+        }
     }
 }

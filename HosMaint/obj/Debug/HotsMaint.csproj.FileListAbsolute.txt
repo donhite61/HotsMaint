@@ -82,3 +82,17 @@ C:\Csharp\2018\HotsMaint\HosMaint\obj\Debug\HotsMaint.csproj.GenerateResource.Ca
 C:\Csharp\2018\HotsMaint\HosMaint\obj\Debug\HotsMaint.csproj.CoreCompileInputs.cache
 C:\Csharp\2018\HotsMaint\HosMaint\obj\Debug\HosMaint.exe
 C:\Csharp\2018\HotsMaint\HosMaint\obj\Debug\HosMaint.pdb
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\bin\Debug\HosMaint.exe.config
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\bin\Debug\HosMaint.exe
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\bin\Debug\HosMaint.pdb
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\bin\Debug\MySql.Data.dll
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\bin\Debug\MySql.Data.xml
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.csprojResolveAssemblyReference.cache
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.FormEdit.resources
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.FormLocationsGrid.resources
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.FormMain.resources
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HosMaint.Properties.Resources.resources
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.csproj.GenerateResource.Cache
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HotsMaint.csproj.CoreCompileInputs.cache
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HosMaint.exe
+D:\Dad\Documents\CSharp\2018\HotsMaintWorkingFromWeb\HotsMaint-master\HosMaint\obj\Debug\HosMaint.pdb

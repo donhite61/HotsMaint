@@ -24,12 +24,15 @@ namespace HotsMaint
 
         private void Btn_Locations_Click(object sender, EventArgs e)
         {
-            ITable loc = new Loc();
-           // var ds = Locations.GetDataSet();
-            //Form locGridForm = new FormLocationsGrid(ds);
-            Form locGridForm = new FormLocationsGrid(loc);
+            Form locGridForm = new FormLocationsGrid();
             locGridForm.Show();
         }
 
+        private void but_SetUpServer_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show("Are you sure you want to erase the locations table?", "Delete all locations", MessageBoxButtons.YesNo);
+            if(result == DialogResult.Yes)
+                LocationsModel.DeleteAndCreateLocationsTableOnServer(GV.SerLoc, 100000001);
+        }
     }
 }

@@ -50,6 +50,7 @@
             this.btn_Delete = new System.Windows.Forms.Button();
             this.txtbx_Phone = new System.Windows.Forms.MaskedTextBox();
             this.txtbx_Zip = new System.Windows.Forms.MaskedTextBox();
+            this.lbl_Timestamp = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbl_Id
@@ -67,6 +68,7 @@
             this.txtbx_Code.Name = "txtbx_Code";
             this.txtbx_Code.Size = new System.Drawing.Size(102, 20);
             this.txtbx_Code.TabIndex = 1;
+            this.txtbx_Code.Validating += new System.ComponentModel.CancelEventHandler(this.txtbx_Code_Validating);
             // 
             // label1
             // 
@@ -238,11 +240,21 @@
             this.txtbx_Zip.Size = new System.Drawing.Size(80, 20);
             this.txtbx_Zip.TabIndex = 6;
             // 
+            // lbl_Timestamp
+            // 
+            this.lbl_Timestamp.AutoSize = true;
+            this.lbl_Timestamp.Location = new System.Drawing.Point(169, 8);
+            this.lbl_Timestamp.Name = "lbl_Timestamp";
+            this.lbl_Timestamp.Size = new System.Drawing.Size(35, 13);
+            this.lbl_Timestamp.TabIndex = 12;
+            this.lbl_Timestamp.Text = "label9";
+            // 
             // FormEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(403, 307);
+            this.Controls.Add(this.lbl_Timestamp);
             this.Controls.Add(this.txtbx_Zip);
             this.Controls.Add(this.txtbx_Phone);
             this.Controls.Add(this.btn_Delete);
@@ -297,5 +309,6 @@
         private System.Windows.Forms.Button btn_Delete;
         private System.Windows.Forms.MaskedTextBox txtbx_Phone;
         private System.Windows.Forms.MaskedTextBox txtbx_Zip;
+        private System.Windows.Forms.Label lbl_Timestamp;
     }
 }

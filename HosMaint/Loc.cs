@@ -32,7 +32,7 @@ namespace HotsMaint
         {
             DataSet = new DataSet();
             var table = MakeNewDataTable(tableName);
-            Sql.FillTable(table);
+            Sql.FillLocationsTable(table);
             DataSet.Tables.Add(table);
             TblUpdTime = Sql.GetTableUpdateTime(tableName);
         }
@@ -113,17 +113,5 @@ namespace HotsMaint
             return cmd;
         }
 
-        //public static string GetNameFromCode(string code)
-        //{
-        //    //string sql = "SELECT loc_Description FROM locations WHERE loc_Code = ?code LIMIT 1";
-        //    //using (var conn = new MySqlConnection(ConnString))
-        //    //using (var cmd = new MySqlCommand(sql, conn))
-        //    //{
-        //    //    cmd.Parameters.AddWithValue("?Code", code);
-        //    //    conn.Open();
-        //    //    var result = cmd.ExecuteScalar();
-        //    //    return result == null ? null : Convert.ToString(cmd.ExecuteScalar());
-        //    //}
-        //}
     }
 }
