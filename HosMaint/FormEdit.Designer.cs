@@ -68,7 +68,6 @@
             this.txtbx_Code.Name = "txtbx_Code";
             this.txtbx_Code.Size = new System.Drawing.Size(102, 20);
             this.txtbx_Code.TabIndex = 1;
-            this.txtbx_Code.Validating += new System.ComponentModel.CancelEventHandler(this.txtbx_Code_Validating);
             // 
             // label1
             // 

@@ -15,6 +15,7 @@ namespace HotsMaint
         private Model loc;
         private DataRow row;
         private BindingSource bs;
+        private string OriginalCode;
 
         public FormEdit(Model _loc)
         {
@@ -28,13 +29,16 @@ namespace HotsMaint
             {
                 row = drv.Row as DataRow;
                 bs = loc.BSource;
+                
             }
 
             SetUpControls();
+            OriginalCode = txtbx_Code.Text;
             Closing += new CancelEventHandler(FormEditClose);
             btn_Delete.Click += new EventHandler(btn_Delete_Click);
             btn_Save.Click += new EventHandler(Btn_Save_Click);
             btn_Cancel.Click += new EventHandler(btn_Cancel_Click);
+            txtbx_Code.Validating += new CancelEventHandler(txtbx_Code_Validating);
         }
 
         private void SetUpControls()
@@ -110,14 +114,14 @@ namespace HotsMaint
         private void txtbx_Code_Validating(object sender, CancelEventArgs e)
         {
             var newCode = ((TextBox)sender).Text;
-            var oldCode = row.ItemArray[1].ToString();
-            if (newCode == oldCode)
+            if (newCode == OriginalCode)
                 return;
 
-            if(loc.CodeHasBeenUsed(loc, newCode))
+            if (loc.CodeHasBeenUsed(loc, newCode))
             {
-                txtbx_Code.Text = oldCode;
+                txtbx_Code.Text = OriginalCode;
                 e.Cancel = true;
+                MessageBox.Show(newCode + " code has been used already");
             }
         }
     }

@@ -24,49 +24,27 @@ namespace HotsMaint
 
         internal bool CodeHasBeenUsed(Model mod, string code)
         {
-            var sql = "SELECT EXISTS(SELECT * FROM " + mod.TableName +
-                " WHERE " + mod.CodeFieldName + " = ?Code)";
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "SELECT EXISTS(SELECT * FROM " + mod.TableName +
+                            " WHERE " + mod.CodeFieldName + " = ?Code)";
             //var sql = "SELECT COUNT(*) FROM " + mod.TableName +
             //    " WHERE " + mod.CodeFieldName + " = ?Code";
 
-            using (var conn = new MySqlConnection(Serv.ConnString))
-            using (var cmd = new MySqlCommand(sql, conn))
-            {
                 cmd.Parameters.AddWithValue("?Code", code);
-                conn.Open();
-                var result = cmd.ExecuteScalar();
+                var result = Serv.ExecuteMySqlScaler(cmd);
                 return (Convert.ToInt32(result) > 0) ? true : false;
-            }
         }
-
         internal bool DeleteRecord(Model mod)
         {
             //todo
             //if Child records exist
             // e.Cancel = true
-            var sql = "DELETE FROM " + mod.TableName +
-                                " WHERE " + mod.IdFieldName + " = ?Id";
-            using (var conn = new MySqlConnection(Serv.ConnString))
-            using (var cmd = new MySqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("?Id", mod.CurRecId);
-                conn.Open();
-                var result = cmd.ExecuteNonQuery();
-                return (result > 0) ? true : false;
-            }
-        }
-
-        public string SafeGetString(MySqlDataReader reader, int colIndex)
-        {
-            if (!reader.IsDBNull(colIndex))
-                return reader.GetString(colIndex);
-            return string.Empty;
-        }
-        public bool SafeGetBool(MySqlDataReader reader, int colIndex)
-        {
-            if (!reader.IsDBNull(colIndex))
-                return reader.GetBoolean(colIndex);
-            return false;
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "DELETE FROM " + mod.TableName +
+                             " WHERE " + mod.IdFieldName + " = ?Id";
+            cmd.Parameters.AddWithValue("?Id", mod.CurRecId);
+            var result = mod.Serv.ExecuteMySQLNonQuery(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
         }
     }
 
@@ -88,8 +66,8 @@ namespace HotsMaint
             CodeFieldName = "loc_Code";
             TableName = GV.TblName.locations.ToString();
 
-            var table = MakeNewDataTable(GV.TblName.locations.ToString());
-            FillLocationsTable(table);
+            var table = MakeNewDataTable(TableName);
+            Serv.FillTable(table);
             Dset.Tables.Add(table);
             BSource = new BindingSource()
             {
@@ -101,25 +79,26 @@ namespace HotsMaint
 
         public static void DeleteAndCreateLocationsTableOnServer(Server server, UInt32 startNumber)
         {
-            var sql = " DROP TABLE IF EXISTS locations";
-            server.ExecuteMySQLStmt(sql);
+            var cmd = new MySqlCommand();
+            cmd.CommandText = " DROP TABLE IF EXISTS locations";
+            server.ExecuteMySQLNonQuery(cmd);
 
-            sql = "CREATE TABLE locations(" +
-                    "loc_Id int not NULL PRIMARY KEY AUTO_INCREMENT," +
-                    "loc_Name VARCHAR(45) UNIQUE NOT NULL," +
-                    "loc_Address VARCHAR(100)," +
-                    "loc_Address2 VARCHAR(100)," +
-                    "loc_City VARCHAR(100)," +
-                    "loc_State VARCHAR(2)," +
-                    "loc_Zip VARCHAR(10)," +
-                    "loc_Phone VARCHAR(10)," +
-                    "loc_Email VARCHAR(100)," +
-                    "loc_Inactive TINYINT(4)," +
-                    "loc_Timestamp TIMESTAMP )";
-            server.ExecuteMySQLStmt(sql);
+            cmd.CommandText = "CREATE TABLE locations(" +
+                                "loc_Id int not NULL PRIMARY KEY AUTO_INCREMENT," +
+                                "loc_Name VARCHAR(45) UNIQUE NOT NULL," +
+                                "loc_Address VARCHAR(100)," +
+                                "loc_Address2 VARCHAR(100)," +
+                                "loc_City VARCHAR(100)," +
+                                "loc_State VARCHAR(2)," +
+                                "loc_Zip VARCHAR(10)," +
+                                "loc_Phone VARCHAR(10)," +
+                                "loc_Email VARCHAR(100)," +
+                                "loc_Inactive TINYINT(4)," +
+                                "loc_Timestamp TIMESTAMP )";
+            server.ExecuteMySQLNonQuery(cmd);
 
-            sql = "ALTER TABLE locations AUTO_INCREMENT="+startNumber;
-            server.ExecuteMySQLStmt(sql);
+            cmd.CommandText = "ALTER TABLE locations AUTO_INCREMENT="+startNumber;
+            server.ExecuteMySQLNonQuery(cmd);
         }
 
         private DataTable MakeNewDataTable(string _tableName)
@@ -140,70 +119,30 @@ namespace HotsMaint
             return table;
         }
 
-        private DataTable FillLocationsTable( DataTable tbl)
-        {
-            tbl.Clear();
-            var sql = "SELECT * FROM " + tbl.TableName;
-
-            using (var conn = new MySqlConnection(Serv.ConnString))
-            using (var cmd = new MySqlCommand(sql,conn))
-            {
-                conn.Open();
-                using (MySqlDataReader rd = cmd.ExecuteReader())
-                {
-                    while (rd.Read())
-                    {
-                        var row = tbl.NewRow();
-                        row[0] = rd.GetUInt32(0);
-                        row[1] = SafeGetString(rd, 1);
-                        row[2] = SafeGetString(rd, 2);
-                        row[3] = SafeGetString(rd, 3);
-                        row[4] = SafeGetString(rd, 4);
-                        row[5] = SafeGetString(rd, 5);
-                        row[6] = SafeGetString(rd, 6);
-                        row[7] = SafeGetString(rd, 7);
-                        row[8] = SafeGetString(rd, 8);
-                        row[9] = SafeGetString(rd, 9);
-                        row[10] = SafeGetBool(rd, 10);
-                        row[11] = rd.GetDateTime(11);
-                        tbl.Rows.Add(row);
-                    }
-                    tbl.AcceptChanges();
-                }
-            }
-            return tbl;
-        }
-
         internal override UInt32 InsertRecord(DataRow _row)
         {
-            var sql = "INSERT INTO locations " +
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "INSERT INTO locations " +
                         "(loc_Code,loc_Name,loc_Address,loc_Address2,loc_City,loc_State,loc_Zip,loc_Phone,loc_Email,loc_Inactive)" +
                         "Values(?Code,?Name,?Add,?Add2,?City,?State,?Zip,?Phone,?Email,?Inactive)";
-            using (var conn = new MySqlConnection(Serv.ConnString))
-            using (var cmd = new MySqlCommand(sql, conn))
-            {
-                AddCommandParams(cmd, _row);
-                conn.Open();
-                var result = cmd.ExecuteNonQuery();
-                UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
-                return mySqlId;
-            }
+
+            AddCommandParams(cmd, _row);
+            var result = Serv.ExecuteMySQLNonQuery(cmd);
+            UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
+            return mySqlId;
         }
 
         internal override bool UpdateRecord(DataRow _row)
         {
-            var sql = "UPDATE locations " +
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "UPDATE locations " +
                     "SET loc_Code=?Code,loc_Name=?Name,loc_Address=?Add,loc_Address2=?Add2,loc_City=?City," +
                     "loc_State=?State,loc_Zip=?Zip,loc_Phone=?Phone,loc_Email=?Email,loc_Inactive=?Inactive " +
                     "WHERE loc_Id = ?Id";
-            using (var conn = new MySqlConnection(Serv.ConnString))
-            using (var cmd = new MySqlCommand(sql, conn))
-            {
-                AddCommandParams(cmd, _row);
-                cmd.Connection.Open();
-                var result = cmd.ExecuteNonQuery();
-                return (result > 0) ? true : false;
-            }
+
+            AddCommandParams(cmd, _row);
+            var result = Serv.ExecuteMySQLNonQuery(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
         }
 
         private MySqlCommand AddCommandParams(MySqlCommand cmd, DataRow _row)
