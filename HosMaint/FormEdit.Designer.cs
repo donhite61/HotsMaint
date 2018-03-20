@@ -243,7 +243,7 @@
             // lbl_Timestamp
             // 
             this.lbl_Timestamp.AutoSize = true;
-            this.lbl_Timestamp.Location = new System.Drawing.Point(232, 17);
+            this.lbl_Timestamp.Location = new System.Drawing.Point(232, 8);
             this.lbl_Timestamp.Name = "lbl_Timestamp";
             this.lbl_Timestamp.Size = new System.Drawing.Size(35, 13);
             this.lbl_Timestamp.TabIndex = 12;
@@ -252,7 +252,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(168, 17);
+            this.label9.Location = new System.Drawing.Point(168, 8);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(58, 13);
             this.label9.TabIndex = 13;

@@ -21,13 +21,16 @@ namespace HotsMaint
         {
             mod = _mod;
             InitializeComponent();
+            txtbx_Phone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
         }
 
         private void FormEdit_Load(object sender, EventArgs e)
         {
+            Text = mod.TableName + " edit window";
             if (mod.BSource.Current is DataRowView drv)
             {
                 row = drv.Row as DataRow;
+                mod.CurRecId = Convert.ToUInt32(row.ItemArray[0]);
                 bs = mod.BSource;
                 
             }
@@ -39,6 +42,7 @@ namespace HotsMaint
             btn_Save.Click += new EventHandler(Btn_Save_Click);
             btn_Cancel.Click += new EventHandler(btn_Cancel_Click);
             txtbx_Code.Validating += new CancelEventHandler(txtbx_Code_Validating);
+            
         }
 
         private void SetUpControls()
@@ -63,7 +67,6 @@ namespace HotsMaint
         private void btn_Delete_Click(object sender, EventArgs e)
         {
             bs.EndEdit();
-            mod.CurRecId = Convert.ToUInt32(row.ItemArray[0]);
             if (mod.DeleteRecord(mod))
             {
                 bs.RemoveCurrent();
@@ -75,7 +78,7 @@ namespace HotsMaint
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
             bs.EndEdit();
-            row.Table.RejectChanges();
+            ((DataSet)bs.DataSource).RejectChanges();
             Close();
         }
 
