@@ -10,10 +10,12 @@ namespace HotsMaint
     {
         public static ServerLocal SerLoc = new ServerLocal();
         public static ServerWeb Serweb = new ServerWeb();
+        public static DateTimeOffset TimeOffset;
         public enum TblName
         {
             locations,
-            vendors
+            vendors,
+            vendProducts
         };
     }
 }

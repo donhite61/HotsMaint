@@ -30,19 +30,29 @@ namespace HotsMaint
 
         private void Btn_Locations_Click(object sender, EventArgs e)
         {
-            Form venGridForm = new FormLocationsGrid(new LocationsModel(GV.SerLoc));
+            ReadServer();
+            var date1 = DateTime.Now;
+            Form venGridForm = new FormLocationsGrid(new LocationsModel(selServer));
             venGridForm.Show();
+            DateTime date2 = DateTime.Now;
+            MessageBox.Show((date1 - date2).ToString());
         }
 
         private void btn_Vendors_Click(object sender, EventArgs e)
         {
-            Form locGridForm = new FormLocationsGrid(new VendorsModel(GV.SerLoc));
+            ReadServer();
+            var date1 = DateTime.Now;
+            Form locGridForm = new FormLocationsGrid(new VendorsModel(selServer));
             locGridForm.Show();
+            DateTime date2 = DateTime.Now;
+            MessageBox.Show((date1 - date2).ToString());
+
         }
 
         private void Btn_Create_Loc_Table_Click(object sender, EventArgs e)
         {
-            ReadInputs();
+            ReadServer();
+            startNum = Convert.ToUInt32(txtBox_storeNum.Text) + 100000000;
             var result = MessageBox.Show("Are you sure you want to erase the locations table?", "Delete all locations", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
                 LocationsModel.DeleteAndCreateLocationsTableOnServer(selServer, startNum);
@@ -50,21 +60,20 @@ namespace HotsMaint
 
         private void Btn_Create_Vend_Table_Click(object sender, EventArgs e)
         {
-            ReadInputs();
+            ReadServer();
+            startNum = Convert.ToUInt32(txtBox_storeNum.Text) + 100000000;
             var result = MessageBox.Show("Are you sure you want to erase the vendors table?", "Delete all vendors", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
                 VendorsModel.DeleteAndCreateVendorsTableOnServer(selServer, startNum);
         }
 
-        private void ReadInputs()
+        private void ReadServer()
         {
             string selectedValue = CmbBox_Server.SelectedValue.ToString();
             if (selectedValue == "Local")
                 selServer = new ServerLocal();
             else if (selectedValue == "Web")
                 selServer = new ServerWeb();
-
-            startNum = Convert.ToUInt32(txtBox_storeNum.Text) + 100000000;
         }
 
     }
