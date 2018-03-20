@@ -13,7 +13,7 @@ namespace HotsMaint
         public enum TblName
         {
             locations,
-            customers
+            vendors
         };
     }
 }

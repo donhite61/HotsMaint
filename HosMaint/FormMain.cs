@@ -24,15 +24,29 @@ namespace HotsMaint
 
         private void Btn_Locations_Click(object sender, EventArgs e)
         {
-            Form locGridForm = new FormLocationsGrid();
+            Form venGridForm = new FormLocationsGrid(new LocationsModel(GV.SerLoc));
+            venGridForm.Show();
+        }
+
+
+        private void btn_Vendors_Click(object sender, EventArgs e)
+        {
+            Form locGridForm = new FormLocationsGrid(new VendorsModel(GV.SerLoc));
             locGridForm.Show();
         }
 
-        private void but_SetUpServer_Click(object sender, EventArgs e)
+        private void Btn_Create_Loc_Table_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to erase the locations table?", "Delete all locations", MessageBoxButtons.YesNo);
-            if(result == DialogResult.Yes)
+            if (result == DialogResult.Yes)
                 LocationsModel.DeleteAndCreateLocationsTableOnServer(GV.SerLoc, 100000001);
+        }
+
+        private void Btn_Create_Vend_Table_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show("Are you sure you want to erase the vendors table?", "Delete all vendors", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+                VendorsModel.DeleteAndCreateVendorsTableOnServer(GV.SerLoc, 100000001);
         }
     }
 }

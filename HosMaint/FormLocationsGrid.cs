@@ -12,24 +12,24 @@ namespace HotsMaint
 {
     public partial class FormLocationsGrid : Form
     {
-        BindingSource bs;
-        Model loc;
+        Model mod;
 
-        public FormLocationsGrid()
+        public FormLocationsGrid(Model _mod)
         {
-            loc = new LocationsModel(GV.SerLoc);
+            mod = _mod;
             InitializeComponent();
         }
 
         private void FormLocationsGrid_Load(object sender, EventArgs e)
         {
-            loc.BSource = new BindingSource()
+            Text = mod.TableName +" listing";
+            mod.BSource = new BindingSource()
             {
-                DataSource = loc.Dset,
-                DataMember = loc.Dset.Tables[0].TableName,
+                DataSource = mod.Dset,
+                DataMember = mod.Dset.Tables[0].TableName,
                 Filter = "Inactive = 0"
             };
-            dgv1.DataSource = loc.BSource;
+            dgv1.DataSource = mod.BSource;
             SetDataGridviewProperties();
             dgv1.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(DgvCell_DoubleClick);
             chkbx_Inactive.CheckedChanged += new EventHandler(Chkbx_Inactive_CheckedChanged);
@@ -53,17 +53,21 @@ namespace HotsMaint
         private void Chkbx_Inactive_CheckedChanged(object sender, EventArgs e)
         {
             if (chkbx_Inactive.Checked)
-                loc.BSource.Filter = null;
+                mod.BSource.Filter = null;
             else
-                loc.BSource.Filter = "Inactive = 0";
+                mod.BSource.Filter = "Inactive = 0";
         }
 
         private void DgvCell_DoubleClick(object sender, EventArgs e)
         {
             var row = dgv1.SelectedRows[0];
-            //loc.CurRecId = Convert.ToUInt32(row.Cells[0].Value.ToString());
-            Form formEdit = new FormEdit(loc);
+            Form formEdit = new FormEdit(mod);
             formEdit.Show();
+        }
+
+        private void Btn_Update_Click(object sender, EventArgs e)
+        {
+            mod.Serv.FillTable(mod.Dset.Tables[0]);
         }
     }
 }

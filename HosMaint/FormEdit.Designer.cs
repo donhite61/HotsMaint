@@ -51,6 +51,7 @@
             this.txtbx_Phone = new System.Windows.Forms.MaskedTextBox();
             this.txtbx_Zip = new System.Windows.Forms.MaskedTextBox();
             this.lbl_Timestamp = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbl_Id
@@ -242,17 +243,27 @@
             // lbl_Timestamp
             // 
             this.lbl_Timestamp.AutoSize = true;
-            this.lbl_Timestamp.Location = new System.Drawing.Point(169, 8);
+            this.lbl_Timestamp.Location = new System.Drawing.Point(232, 17);
             this.lbl_Timestamp.Name = "lbl_Timestamp";
             this.lbl_Timestamp.Size = new System.Drawing.Size(35, 13);
             this.lbl_Timestamp.TabIndex = 12;
             this.lbl_Timestamp.Text = "label9";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(168, 17);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(58, 13);
+            this.label9.TabIndex = 13;
+            this.label9.Text = "Timestamp";
             // 
             // FormEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(403, 307);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.lbl_Timestamp);
             this.Controls.Add(this.txtbx_Zip);
             this.Controls.Add(this.txtbx_Phone);
@@ -309,5 +320,6 @@
         private System.Windows.Forms.MaskedTextBox txtbx_Phone;
         private System.Windows.Forms.MaskedTextBox txtbx_Zip;
         private System.Windows.Forms.Label lbl_Timestamp;
+        private System.Windows.Forms.Label label9;
     }
 }

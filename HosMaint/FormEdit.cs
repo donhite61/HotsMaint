@@ -12,23 +12,23 @@ namespace HotsMaint
 {
     public partial class FormEdit : Form
     {
-        private Model loc;
+        private Model mod;
         private DataRow row;
         private BindingSource bs;
         private string OriginalCode;
 
-        public FormEdit(Model _loc)
+        public FormEdit(Model _mod)
         {
-            loc = _loc;
+            mod = _mod;
             InitializeComponent();
         }
 
         private void FormEdit_Load(object sender, EventArgs e)
         {
-            if (loc.BSource.Current is DataRowView drv)
+            if (mod.BSource.Current is DataRowView drv)
             {
                 row = drv.Row as DataRow;
-                bs = loc.BSource;
+                bs = mod.BSource;
                 
             }
 
@@ -63,8 +63,8 @@ namespace HotsMaint
         private void btn_Delete_Click(object sender, EventArgs e)
         {
             bs.EndEdit();
-            loc.CurRecId = Convert.ToUInt32(row.ItemArray[0]);
-            if (loc.DeleteRecord(loc))
+            mod.CurRecId = Convert.ToUInt32(row.ItemArray[0]);
+            if (mod.DeleteRecord(mod))
             {
                 bs.RemoveCurrent();
                 ((DataSet)bs.DataSource).AcceptChanges();
@@ -84,12 +84,12 @@ namespace HotsMaint
             if (row.RowState == DataRowState.Detached)// new record
             {
                 row[10] = chkbx_Inactive.Checked;
-                row[0] = loc.InsertRecord(row);
+                row[0] = mod.InsertRecord(row);
                 bs.EndEdit();
             }
             bs.EndEdit();
             if (row.RowState == DataRowState.Modified)// record changed
-                loc.UpdateRecord(row);
+                mod.UpdateRecord(row);
 
             ((DataSet)bs.DataSource).AcceptChanges();
             Close();
@@ -117,7 +117,7 @@ namespace HotsMaint
             if (newCode == OriginalCode)
                 return;
 
-            if (loc.CodeHasBeenUsed(loc, newCode))
+            if (mod.CodeHasBeenUsed(mod, newCode))
             {
                 txtbx_Code.Text = OriginalCode;
                 e.Cancel = true;
