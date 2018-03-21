@@ -49,24 +49,6 @@ namespace HotsMaint
 
         }
 
-        private void Btn_Create_Loc_Table_Click(object sender, EventArgs e)
-        {
-            ReadServer();
-            startNum = Convert.ToUInt32(txtBox_storeNum.Text) + 100000000;
-            var result = MessageBox.Show("Are you sure you want to erase the locations table?", "Delete all locations", MessageBoxButtons.YesNo);
-            if (result == DialogResult.Yes)
-                LocationsModel.DeleteAndCreateLocationsTableOnServer(selServer, startNum);
-        }
-
-        private void Btn_Create_Vend_Table_Click(object sender, EventArgs e)
-        {
-            ReadServer();
-            startNum = Convert.ToUInt32(txtBox_storeNum.Text) + 100000000;
-            var result = MessageBox.Show("Are you sure you want to erase the vendors table?", "Delete all vendors", MessageBoxButtons.YesNo);
-            if (result == DialogResult.Yes)
-                VendorsModel.DeleteAndCreateVendorsTableOnServer(selServer, startNum);
-        }
-
         private void ReadServer()
         {
             string selectedValue = CmbBox_Server.SelectedValue.ToString();
@@ -76,5 +58,11 @@ namespace HotsMaint
                 selServer = new ServerWeb();
         }
 
+        private void but_SetUpServer_Click(object sender, EventArgs e)
+        {
+            ReadServer();
+            startNum = Convert.ToUInt32(txtBox_storeNum.Text);
+            selServer.DeleteAndCreateTablesOnServer(startNum);
+        }
     }
 }

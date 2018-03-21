@@ -31,7 +31,6 @@
             this.btn_Locations = new System.Windows.Forms.Button();
             this.but_SetUpServer = new System.Windows.Forms.Button();
             this.btn_Vendors = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.CmbBox_Server = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtBox_storeNum = new System.Windows.Forms.TextBox();
@@ -48,13 +47,13 @@
             // 
             // but_SetUpServer
             // 
-            this.but_SetUpServer.Location = new System.Drawing.Point(194, 35);
+            this.but_SetUpServer.Location = new System.Drawing.Point(408, 96);
             this.but_SetUpServer.Name = "but_SetUpServer";
-            this.but_SetUpServer.Size = new System.Drawing.Size(104, 28);
+            this.but_SetUpServer.Size = new System.Drawing.Size(134, 28);
             this.but_SetUpServer.TabIndex = 1;
-            this.but_SetUpServer.Text = "Create Locations";
+            this.but_SetUpServer.Text = "Destroy & Create Tables";
             this.but_SetUpServer.UseVisualStyleBackColor = true;
-            this.but_SetUpServer.Click += new System.EventHandler(this.Btn_Create_Loc_Table_Click);
+            this.but_SetUpServer.Click += new System.EventHandler(this.but_SetUpServer_Click);
             // 
             // btn_Vendors
             // 
@@ -65,16 +64,6 @@
             this.btn_Vendors.Text = "Vendors";
             this.btn_Vendors.UseVisualStyleBackColor = true;
             this.btn_Vendors.Click += new System.EventHandler(this.btn_Vendors_Click);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(194, 69);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(104, 28);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Create Vendors";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Btn_Create_Vend_Table_Click);
             // 
             // CmbBox_Server
             // 
@@ -108,7 +97,6 @@
             this.Controls.Add(this.txtBox_storeNum);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.CmbBox_Server);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.but_SetUpServer);
             this.Controls.Add(this.btn_Vendors);
             this.Controls.Add(this.btn_Locations);
@@ -125,7 +113,6 @@
         private System.Windows.Forms.Button btn_Locations;
         private System.Windows.Forms.Button but_SetUpServer;
         private System.Windows.Forms.Button btn_Vendors;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox CmbBox_Server;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtBox_storeNum;
