@@ -31,31 +31,24 @@ namespace HotsMaint
         private void Btn_Locations_Click(object sender, EventArgs e)
         {
             ReadServer();
-            var date1 = DateTime.Now;
             Form venGridForm = new FormLocationsGrid(new LocationsModel(selServer));
             venGridForm.Show();
-            DateTime date2 = DateTime.Now;
-            MessageBox.Show((date1 - date2).ToString());
         }
 
         private void btn_Vendors_Click(object sender, EventArgs e)
         {
             ReadServer();
-            var date1 = DateTime.Now;
             Form locGridForm = new FormLocationsGrid(new VendorsModel(selServer));
             locGridForm.Show();
-            DateTime date2 = DateTime.Now;
-            MessageBox.Show((date1 - date2).ToString());
-
         }
 
         private void ReadServer()
         {
             string selectedValue = CmbBox_Server.SelectedValue.ToString();
             if (selectedValue == "Local")
-                selServer = new ServerLocal();
+                selServer = GV.SerLoc;
             else if (selectedValue == "Web")
-                selServer = new ServerWeb();
+                selServer = GV.Serweb;
         }
 
         private void but_SetUpServer_Click(object sender, EventArgs e)

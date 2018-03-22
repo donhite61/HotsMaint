@@ -30,7 +30,8 @@ namespace HotsMaint
             if (mod.BSource.Current is DataRowView drv)
             {
                 row = drv.Row as DataRow;
-                mod.CurRecId = Convert.ToUInt32(row.ItemArray[0]);
+                if (row.RowState != DataRowState.Detached)// new record
+                    mod.CurRecId = Convert.ToUInt32(row.ItemArray[0]);
                 bs = mod.BSource;
                 
             }

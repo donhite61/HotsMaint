@@ -11,10 +11,11 @@ namespace HotsMaint
 {
     public abstract class Server
     {
-        public TimeSpan ServTimeOffset { get; set; }
         public abstract string ConnString { get; set; }
 
-        public abstract void DeleteAndCreateTablesOnServer(UInt32 startNumber);
+
+
+        internal abstract void DeleteAndCreateTablesOnServer(UInt32 startNumber);
 
         internal object ExecuteMySQLNonQuery(MySqlCommand cmd)
         {
@@ -91,13 +92,32 @@ namespace HotsMaint
     public class ServerLocal : Server
     {
         public override string ConnString { get; set; }
+        public TimeSpan ServTimeCorr { get; set; }
+        //todo need to save this in case internet goes out
 
         public ServerLocal()
         {
             ConnString = "server=localhost;user=root;database=hitephot_pos;port=3306;password=6716;";
+            GV.SerLoc.ServTimeCorr = GV.SerLoc.GetServerTimeAndSetOffsetTime();
+            GV.SerLoc.SaveTimeOffsetToServer(GV.SerLoc.ServTimeCorr);
         }
 
-        public override void DeleteAndCreateTablesOnServer(UInt32 startNumber)
+        internal TimeSpan GetServerTimeAndSetOffsetTime()
+        {
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "SELECT NOW() FROM DUAL";
+            var result = ExecuteMySqlScaler(cmd);
+            DateTime webTime;
+            DateTime.TryParse(result.ToString(), out webTime);
+            DateTime localTime = DateTime.Now;
+            return webTime - localTime;
+        }
+
+        internal void SaveTimeOffsetToServer(TimeSpan servTimeCorr)
+        {
+            throw new NotImplementedException();
+        }
+        internal override void DeleteAndCreateTablesOnServer(UInt32 startNumber)
         {
             startNumber = startNumber * 100000000 +1;
 
@@ -188,18 +208,20 @@ namespace HotsMaint
             cmd.CommandText = "ALTER TABLE vendProducts AUTO_INCREMENT=" + startNumber;
             ExecuteMySQLNonQuery(cmd);
         }
+
     }
 
     public class ServerWeb : Server
     {
         public override string ConnString { get; set; }
 
+
         public ServerWeb()
         {
             ConnString = "server=69.89.31.188;user=hitephot_don;database=hitephot_pos;port=3306;password=Hite1985;";
         }
 
-        public override void DeleteAndCreateTablesOnServer(UInt32 startNumber)
+        internal override void DeleteAndCreateTablesOnServer(UInt32 startNumber)
         {
             var result = MessageBox.Show("Are you sure you want to erase the Web locations table?",
                                          "Destroy Web locations Table?", MessageBoxButtons.YesNo);
