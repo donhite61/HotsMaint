@@ -16,6 +16,7 @@ namespace HotsMaint
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Startup.DoStartup();
             Application.Run(new FormMain());
         }
     }

@@ -12,10 +12,32 @@ namespace HotsMaint
     public abstract class Server
     {
         public abstract string ConnString { get; set; }
+        public abstract TimeSpan ServOffset { get; set; }
 
-
+        public Server()
+        {
+            SetServerOffset();
+            WriteServerOffsetToVariablesTable();
+        }
 
         internal abstract void DeleteAndCreateTablesOnServer(UInt32 startNumber);
+
+        internal void SetServerOffset()
+        {
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "SELECT NOW() FROM DUAL";
+            var result = ExecuteMySqlScaler(cmd);
+            DateTime webTime;
+            DateTime.TryParse(result.ToString(), out webTime);
+            DateTime localTime = DateTime.Now;
+            ServOffset = webTime - localTime;
+        }
+
+        internal void WriteServerOffsetToVariablesTable()
+        {
+            var a = ServOffset;
+            throw new NotImplementedException();
+        }
 
         internal object ExecuteMySQLNonQuery(MySqlCommand cmd)
         {
@@ -92,39 +114,26 @@ namespace HotsMaint
     public class ServerLocal : Server
     {
         public override string ConnString { get; set; }
-        public TimeSpan ServTimeCorr { get; set; }
-        //todo need to save this in case internet goes out
+        public override TimeSpan ServOffset { get; set; }
 
         public ServerLocal()
         {
             ConnString = "server=localhost;user=root;database=hitephot_pos;port=3306;password=6716;";
-            GV.SerLoc.ServTimeCorr = GV.SerLoc.GetServerTimeAndSetOffsetTime();
-            GV.SerLoc.SaveTimeOffsetToServer(GV.SerLoc.ServTimeCorr);
         }
 
-        internal TimeSpan GetServerTimeAndSetOffsetTime()
-        {
-            var cmd = new MySqlCommand();
-            cmd.CommandText = "SELECT NOW() FROM DUAL";
-            var result = ExecuteMySqlScaler(cmd);
-            DateTime webTime;
-            DateTime.TryParse(result.ToString(), out webTime);
-            DateTime localTime = DateTime.Now;
-            return webTime - localTime;
-        }
-
-        internal void SaveTimeOffsetToServer(TimeSpan servTimeCorr)
-        {
-            throw new NotImplementedException();
-        }
         internal override void DeleteAndCreateTablesOnServer(UInt32 startNumber)
         {
             startNumber = startNumber * 100000000 +1;
 
-            var result = MessageBox.Show("Are you sure you want to erase the Local locations table?",
+            var result = MessageBox.Show("Are you sure you want to erase the Local SavedVariables table?",
+                                         "Destroy Local SavedVariables Table?", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+                DeleteAndCreateSvdVariablesTableOnServer();
+
+            result = MessageBox.Show("Are you sure you want to erase the Local locations table?",
                                          "Destroy Local locations Table?", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
-                DeleteAndCreateLocationsTablesOnServer(startNumber);
+                DeleteAndCreateLocationsTableOnServer(startNumber);
 
             result = MessageBox.Show("Are you sure you want to erase the Local Vendors table?",
                                          "Destroy Local Vendors Table?", MessageBoxButtons.YesNo);
@@ -137,7 +146,19 @@ namespace HotsMaint
                 DeleteAndCreateVendProdTableOnServer(startNumber);
         }
 
-        public void DeleteAndCreateLocationsTablesOnServer(UInt32 startNumber)
+        public void DeleteAndCreateSvdVariablesTableOnServer()
+        {
+            var cmd = new MySqlCommand(ConnString);
+            cmd.CommandText = " DROP TABLE IF EXISTS variables";
+            ExecuteMySQLNonQuery(cmd);
+
+            cmd.CommandText = "CREATE TABLE variables(" +
+                                "Var_Key VARCHAR(20) UNIQUE NOT NULL PRIMARY KEY," +
+                                "loc_Value VARCHAR(100) NOT NULL)";
+            ExecuteMySQLNonQuery(cmd);
+        }
+
+        public void DeleteAndCreateLocationsTableOnServer(UInt32 startNumber)
         {
             var cmd = new MySqlCommand(ConnString);
             cmd.CommandText = " DROP TABLE IF EXISTS locations";
@@ -214,6 +235,8 @@ namespace HotsMaint
     public class ServerWeb : Server
     {
         public override string ConnString { get; set; }
+        public override TimeSpan ServOffset { get; set; }
+        //todo need to save this in case internet goes out
 
 
         public ServerWeb()
@@ -226,7 +249,7 @@ namespace HotsMaint
             var result = MessageBox.Show("Are you sure you want to erase the Web locations table?",
                                          "Destroy Web locations Table?", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
-                DeleteAndCreateLocationsTablesOnServer();
+                DeleteAndCreateLocationsTableOnServer();
 
             result = MessageBox.Show("Are you sure you want to erase the Web Vendors table?",
                                          "Destroy Web Vendors Table?", MessageBoxButtons.YesNo);
@@ -239,7 +262,7 @@ namespace HotsMaint
                 DeleteAndCreateVendProdTableOnServer();
         }
 
-        public void DeleteAndCreateLocationsTablesOnServer()
+        public void DeleteAndCreateLocationsTableOnServer()
         {
             var cmd = new MySqlCommand(ConnString);
             cmd.CommandText = " DROP TABLE IF EXISTS locations";

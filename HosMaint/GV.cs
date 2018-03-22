@@ -8,14 +8,20 @@ namespace HotsMaint
 {
     public static class GV
     {
-        public static ServerLocal SerLoc = new ServerLocal();
-        public static ServerWeb Serweb = new ServerWeb();
-        public static DateTimeOffset TimeOffset;
+        public static ServerLocal SerLoc;
+        public static ServerWeb SerWeb;
+
         public enum TblName
         {
             locations,
             vendors,
             vendProducts
+        };
+
+        public enum SvdVariables
+        {
+            ServTimeOffset,
+            DummySavedVariable
         };
     }
 }

@@ -69,6 +69,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="Startup.cs" />
     <EmbeddedResource Include="FormEdit.resx">
       <DependentUpon>FormEdit.cs</DependentUpon>
     </EmbeddedResource>

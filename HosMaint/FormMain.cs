@@ -48,7 +48,7 @@ namespace HotsMaint
             if (selectedValue == "Local")
                 selServer = GV.SerLoc;
             else if (selectedValue == "Web")
-                selServer = GV.Serweb;
+                selServer = GV.SerWeb;
         }
 
         private void but_SetUpServer_Click(object sender, EventArgs e)
