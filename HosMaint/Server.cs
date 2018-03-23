@@ -14,15 +14,9 @@ namespace HotsMaint
         public abstract string ConnString { get; set; }
         public abstract TimeSpan ServOffset { get; set; }
 
-        public Server()
-        {
-            SetServerOffset();
-            WriteServerOffsetToVariablesTable();
-        }
-
         internal abstract void DeleteAndCreateTablesOnServer(UInt32 startNumber);
 
-        internal void SetServerOffset()
+        internal TimeSpan GetServerOffset()
         {
             var cmd = new MySqlCommand();
             cmd.CommandText = "SELECT NOW() FROM DUAL";
@@ -30,13 +24,17 @@ namespace HotsMaint
             DateTime webTime;
             DateTime.TryParse(result.ToString(), out webTime);
             DateTime localTime = DateTime.Now;
-            ServOffset = webTime - localTime;
+
+            if (DateTime.Compare(localTime, webTime) < 0)
+                return localTime - webTime;
+            else
+                return (localTime - webTime).Negate();
         }
 
         internal void WriteServerOffsetToVariablesTable()
         {
             var a = ServOffset;
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         internal object ExecuteMySQLNonQuery(MySqlCommand cmd)
@@ -57,44 +55,6 @@ namespace HotsMaint
                 cmd.Connection.Open();
                 return cmd.ExecuteScalar();
             }
-        }
-
-        internal DataTable FillTable(DataTable tbl)
-        {
-            tbl.Clear();
-            var sql = "SELECT * FROM " + tbl.TableName;
-
-            using (var conn = new MySqlConnection(ConnString))
-            using (var cmd = new MySqlCommand(sql, conn))
-            {
-                conn.Open();
-                using (MySqlDataReader rd = cmd.ExecuteReader())
-                {
-                    int count = rd.FieldCount;
-                    while (rd.Read())
-                    {
-                        var row = tbl.NewRow();
-                        for (var i = 0; i < count; i++)
-                        {
-                            row[0] = rd.GetUInt32(0);
-                            row[1] = SafeGetString(rd, 1);
-                            row[2] = SafeGetString(rd, 2);
-                            row[3] = SafeGetString(rd, 3);
-                            row[4] = SafeGetString(rd, 4);
-                            row[5] = SafeGetString(rd, 5);
-                            row[6] = SafeGetString(rd, 6);
-                            row[7] = SafeGetString(rd, 7);
-                            row[8] = SafeGetString(rd, 8);
-                            row[9] = SafeGetString(rd, 9);
-                            row[10] = SafeGetBool(rd, 10);
-                            row[11] = rd.GetDateTime(11);
-                        }
-                        tbl.Rows.Add(row);
-                    }
-                    tbl.AcceptChanges();
-                }
-            }
-            return tbl;
         }
 
         public string SafeGetString(MySqlDataReader reader, int colIndex)
@@ -119,6 +79,9 @@ namespace HotsMaint
         public ServerLocal()
         {
             ConnString = "server=localhost;user=root;database=hitephot_pos;port=3306;password=6716;";
+            ServOffset = GetServerOffset();
+            WriteServerOffsetToVariablesTable();
+
         }
 
         internal override void DeleteAndCreateTablesOnServer(UInt32 startNumber)
@@ -242,6 +205,8 @@ namespace HotsMaint
         public ServerWeb()
         {
             ConnString = "server=69.89.31.188;user=hitephot_don;database=hitephot_pos;port=3306;password=Hite1985;";
+            ServOffset = GetServerOffset();
+            WriteServerOffsetToVariablesTable();
         }
 
         internal override void DeleteAndCreateTablesOnServer(UInt32 startNumber)

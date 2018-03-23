@@ -12,8 +12,8 @@ namespace HotsMaint
         {
             GV.SerLoc = new ServerLocal();
             GV.SerWeb = new ServerWeb();
-            //GV.SerLoc.SetServerOffset();
-            //GV.SerWeb.SetServerOffset();
+            var l = GV.SerLoc.ServOffset;
+            var w = GV.SerWeb.ServOffset;
         }
     }
 }

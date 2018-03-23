@@ -26,7 +26,6 @@ namespace HotsMaint
 
         private void FormEdit_Load(object sender, EventArgs e)
         {
-            Text = mod.TableName + " edit window";
             if (mod.BSource.Current is DataRowView drv)
             {
                 row = drv.Row as DataRow;
@@ -35,6 +34,7 @@ namespace HotsMaint
                 bs = mod.BSource;
                 
             }
+            Text = mod.Dset.Tables[0].TableName + " edit window";
 
             SetUpControls();
             OriginalCode = txtbx_Code.Text;

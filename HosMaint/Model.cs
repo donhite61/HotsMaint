@@ -13,37 +13,28 @@ namespace HotsMaint
     {
         public abstract Server Serv { get; set; }
         public abstract DataSet Dset { get; set; }
-        public abstract string IdFieldName { get; set; }
-        public abstract string CodeFieldName { get; set; }
         public abstract string EditFormName { get; set; }
-        public abstract string TableName { get; set; }
         public abstract UInt32 CurRecId { get; set; }
         public abstract BindingSource BSource { get; set; }
 
+        internal abstract DataTable FillTable(DataTable tbl);
+        internal abstract bool DeleteRecord(Model mod);
+        internal abstract bool CodeHasBeenUsed(Model mod, string code);
         internal abstract UInt32 InsertRecord(DataRow row);
         internal abstract bool UpdateRecord(DataRow _row);
 
-        internal bool CodeHasBeenUsed(Model mod, string code)
-        {
-            var cmd = new MySqlCommand();
-            cmd.CommandText = "SELECT EXISTS(SELECT * FROM " + mod.TableName +
-                            " WHERE " + mod.CodeFieldName + " = ?Code)";
 
-                cmd.Parameters.AddWithValue("?Code", code);
-                var result = Serv.ExecuteMySqlScaler(cmd);
-                return (Convert.ToInt32(result) > 0) ? true : false;
-        }
-        internal bool DeleteRecord(Model mod)
+        public string SafeGetString(MySqlDataReader reader, int colIndex)
         {
-            //todo
-            //if Child records exist
-            // e.Cancel = true
-            var cmd = new MySqlCommand();
-            cmd.CommandText = "DELETE FROM " + mod.TableName +
-                             " WHERE " + mod.IdFieldName + " = ?Id";
-            cmd.Parameters.AddWithValue("?Id", mod.CurRecId);
-            var result = mod.Serv.ExecuteMySQLNonQuery(cmd);
-            return (Convert.ToInt32(result) > 0) ? true : false;
+            if (!reader.IsDBNull(colIndex))
+                return reader.GetString(colIndex);
+            return string.Empty;
+        }
+        public bool SafeGetBool(MySqlDataReader reader, int colIndex)
+        {
+            if (!reader.IsDBNull(colIndex))
+                return reader.GetBoolean(colIndex);
+            return false;
         }
     }
 
@@ -51,10 +42,7 @@ namespace HotsMaint
     {
         public override Server Serv { get; set; }
         public override DataSet Dset { get; set; }
-        public override string IdFieldName { get; set; }
-        public override string CodeFieldName { get; set; }
         public override string EditFormName { get; set; }
-        public override string TableName { get; set; }
         public override UInt32 CurRecId { get; set; }
         public override BindingSource BSource { get; set; }
 
@@ -62,18 +50,15 @@ namespace HotsMaint
         {
             Serv = server;
             Dset = new DataSet();
-            IdFieldName = "loc_Id";
-            CodeFieldName = "loc_Code";
             EditFormName = "EditLocations";
-            TableName = GV.TblName.locations.ToString();
 
-            var table = MakeNewDataTable(TableName);
-            Serv.FillTable(table);
+            var table = MakeNewDataTable(GV.TblName.locations.ToString());
+            FillTable(table);
             Dset.Tables.Add(table);
             BSource = new BindingSource()
             {
                 DataSource = Dset,
-                DataMember = Dset.Tables[0].TableName,
+                DataMember = table.TableName,
                 Filter = "Inactive = 0"
             };
         }
@@ -94,6 +79,65 @@ namespace HotsMaint
             table.Columns.Add("Inactive", typeof(Boolean));
             table.Columns.Add("Timestamp", typeof(DateTime));
             return table;
+        }
+
+        internal override DataTable FillTable(DataTable tbl)
+        {
+            tbl.Clear();
+            var sql = "SELECT * FROM " + tbl.TableName;
+
+            using (var conn = new MySqlConnection(Serv.ConnString))
+            using (var cmd = new MySqlCommand(sql, conn))
+            {
+                conn.Open();
+                using (MySqlDataReader rd = cmd.ExecuteReader())
+                {
+                    int count = rd.FieldCount;
+                    while (rd.Read())
+                    {
+                        var row = tbl.NewRow();
+                        row[0] = rd.GetUInt32(0);
+                        row[1] = SafeGetString(rd, 1);
+                        row[2] = SafeGetString(rd, 2);
+                        row[3] = SafeGetString(rd, 3);
+                        row[4] = SafeGetString(rd, 4);
+                        row[5] = SafeGetString(rd, 5);
+                        row[6] = SafeGetString(rd, 6);
+                        row[7] = SafeGetString(rd, 7);
+                        row[8] = SafeGetString(rd, 8);
+                        row[9] = SafeGetString(rd, 9);
+                        row[10] = SafeGetBool(rd, 10);
+                        row[11] = rd.GetDateTime(11);
+                        tbl.Rows.Add(row);
+                    }
+                    tbl.AcceptChanges();
+                }
+            }
+            return tbl;
+        }
+
+        internal override bool CodeHasBeenUsed(Model mod, string code)
+        {
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "SELECT EXISTS(SELECT * FROM locations" +
+                            " WHERE loc_Id = ?Code)";
+
+            cmd.Parameters.AddWithValue("?Code", code);
+            var result = Serv.ExecuteMySqlScaler(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
+        }
+
+        internal override bool DeleteRecord(Model mod)
+        {
+            //todo
+            //if Child records exist
+            // e.Cancel = true
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "DELETE FROM locations" +
+                             " WHERE loc_Id = ?Id";
+            cmd.Parameters.AddWithValue("?Id", mod.CurRecId);
+            var result = mod.Serv.ExecuteMySQLNonQuery(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
         }
 
         internal override UInt32 InsertRecord(DataRow _row)
@@ -146,10 +190,7 @@ namespace HotsMaint
     {
         public override Server Serv { get; set; }
         public override DataSet Dset { get; set; }
-        public override string IdFieldName { get; set; }
-        public override string CodeFieldName { get; set; }
         public override string EditFormName { get; set; }
-        public override string TableName { get; set; }
         public override UInt32 CurRecId { get; set; }
         public override BindingSource BSource { get; set; }
 
@@ -157,13 +198,10 @@ namespace HotsMaint
         {
             Serv = server;
             Dset = new DataSet();
-            IdFieldName = "ven_Id";
-            CodeFieldName = "ven_Code";
             EditFormName = "EditVendors";
-            TableName = GV.TblName.vendors.ToString();
 
-            var table = MakeNewDataTable(TableName);
-            Serv.FillTable(table);
+            var table = MakeNewDataTable(GV.TblName.vendors.ToString());
+            FillTable(table);
             Dset.Tables.Add(table);
             BSource = new BindingSource()
             {
@@ -189,6 +227,65 @@ namespace HotsMaint
             table.Columns.Add("Inactive", typeof(Boolean));
             table.Columns.Add("Timestamp", typeof(DateTime));
             return table;
+        }
+
+        internal override DataTable FillTable(DataTable tbl)
+        {
+            tbl.Clear();
+            var sql = "SELECT * FROM " + tbl.TableName;
+
+            using (var conn = new MySqlConnection(Serv.ConnString))
+            using (var cmd = new MySqlCommand(sql, conn))
+            {
+                conn.Open();
+                using (MySqlDataReader rd = cmd.ExecuteReader())
+                {
+                    int count = rd.FieldCount;
+                    while (rd.Read())
+                    {
+                        var row = tbl.NewRow();
+                        row[0] = rd.GetUInt32(0);
+                        row[1] = SafeGetString(rd, 1);
+                        row[2] = SafeGetString(rd, 2);
+                        row[3] = SafeGetString(rd, 3);
+                        row[4] = SafeGetString(rd, 4);
+                        row[5] = SafeGetString(rd, 5);
+                        row[6] = SafeGetString(rd, 6);
+                        row[7] = SafeGetString(rd, 7);
+                        row[8] = SafeGetString(rd, 8);
+                        row[9] = SafeGetString(rd, 9);
+                        row[10] = SafeGetBool(rd, 10);
+                        row[11] = rd.GetDateTime(11);
+                        tbl.Rows.Add(row);
+                    }
+                    tbl.AcceptChanges();
+                }
+            }
+            return tbl;
+        }
+
+        internal override bool CodeHasBeenUsed(Model mod, string code)
+        {
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "SELECT EXISTS(SELECT * FROM vendors" +
+                            " WHERE ven_Id = ?Code)";
+
+            cmd.Parameters.AddWithValue("?Code", code);
+            var result = Serv.ExecuteMySqlScaler(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
+        }
+
+        internal override bool DeleteRecord(Model mod)
+        {
+            //todo
+            //if Child records exist
+            // e.Cancel = true
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "DELETE FROM vendors" +
+                             " WHERE ven_Id = ?Id";
+            cmd.Parameters.AddWithValue("?Id", mod.CurRecId);
+            var result = mod.Serv.ExecuteMySQLNonQuery(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
         }
 
         internal override UInt32 InsertRecord(DataRow _row)
@@ -241,10 +338,7 @@ namespace HotsMaint
     {
         public override Server Serv { get; set; }
         public override DataSet Dset { get; set; }
-        public override string IdFieldName { get; set; }
-        public override string CodeFieldName { get; set; }
         public override string EditFormName { get; set; }
-        public override string TableName { get; set; }
         public override UInt32 CurRecId { get; set; }
         public override BindingSource BSource { get; set; }
 
@@ -252,13 +346,10 @@ namespace HotsMaint
         {
             Serv = server;
             Dset = new DataSet();
-            IdFieldName = "vProd_Id";
-            CodeFieldName = "vProd_Code";
             EditFormName = "EditVproducts";
-            TableName = GV.TblName.vendProducts.ToString();
 
-            var table = MakeNewDataTable(TableName);
-            Serv.FillTable(table);
+            var table = MakeNewDataTable(GV.TblName.vendProducts.ToString());
+            FillTable(table);
             Dset.Tables.Add(table);
             BSource = new BindingSource()
             {
@@ -281,6 +372,65 @@ namespace HotsMaint
             table.Columns.Add("Inactive", typeof(Boolean));
             table.Columns.Add("Timestamp", typeof(DateTime));
             return table;
+        }
+
+        internal override DataTable FillTable(DataTable tbl)
+        {
+            tbl.Clear();
+            var sql = "SELECT * FROM " + tbl.TableName;
+
+            using (var conn = new MySqlConnection(Serv.ConnString))
+            using (var cmd = new MySqlCommand(sql, conn))
+            {
+                conn.Open();
+                using (MySqlDataReader rd = cmd.ExecuteReader())
+                {
+                    int count = rd.FieldCount;
+                    while (rd.Read())
+                    {
+                        var row = tbl.NewRow();
+                        row[0] = rd.GetUInt32(0);
+                        row[1] = SafeGetString(rd, 1);
+                        row[2] = SafeGetString(rd, 2);
+                        row[3] = SafeGetString(rd, 3);
+                        row[4] = SafeGetString(rd, 4);
+                        row[5] = SafeGetString(rd, 5);
+                        row[6] = SafeGetString(rd, 6);
+                        row[7] = SafeGetString(rd, 7);
+                        row[8] = SafeGetString(rd, 8);
+                        row[9] = SafeGetString(rd, 9);
+                        row[10] = SafeGetBool(rd, 10);
+                        row[11] = rd.GetDateTime(11);
+                        tbl.Rows.Add(row);
+                    }
+                    tbl.AcceptChanges();
+                }
+            }
+            return tbl;
+        }
+
+        internal override bool CodeHasBeenUsed(Model mod, string code)
+        {
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "SELECT EXISTS(SELECT * FROM vendProducts" +
+                            " WHERE vProd_Code = ?Code)";
+
+            cmd.Parameters.AddWithValue("?Code", code);
+            var result = Serv.ExecuteMySqlScaler(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
+        }
+
+        internal override bool DeleteRecord(Model mod)
+        {
+            //todo
+            //if Child records exist
+            // e.Cancel = true
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "DELETE FROM vendProducts" +
+                             " WHERE ven_Id = ?Id";
+            cmd.Parameters.AddWithValue("?Id", mod.CurRecId);
+            var result = mod.Serv.ExecuteMySQLNonQuery(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
         }
 
         internal override UInt32 InsertRecord(DataRow _row)

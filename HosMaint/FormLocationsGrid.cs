@@ -22,7 +22,6 @@ namespace HotsMaint
 
         private void FormLocationsGrid_Load(object sender, EventArgs e)
         {
-            Text = mod.TableName +" listing";
             mod.BSource = new BindingSource()
             {
                 DataSource = mod.Dset,
@@ -33,6 +32,8 @@ namespace HotsMaint
             SetDataGridviewProperties();
             dgv1.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(DgvCell_DoubleClick);
             chkbx_Inactive.CheckedChanged += new EventHandler(Chkbx_Inactive_CheckedChanged);
+            Text = mod.Dset.Tables[0].TableName + " listing";
+
         }
 
         private void SetDataGridviewProperties()
@@ -67,7 +68,7 @@ namespace HotsMaint
 
         private void Btn_Update_Click(object sender, EventArgs e)
         {
-            mod.Serv.FillTable(mod.Dset.Tables[0]);
+            mod.FillTable(mod.Dset.Tables[0]);
         }
     }
 }
