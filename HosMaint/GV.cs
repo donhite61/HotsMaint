@@ -10,6 +10,7 @@ namespace HotsMaint
     {
         public static ServerLocal SerLoc;
         public static ServerWeb SerWeb;
+        public static Double ServTimeDiff = 0;
 
         public enum TblName
         {
@@ -20,7 +21,7 @@ namespace HotsMaint
 
         public enum SvdVariables
         {
-            ServTimeOffset,
+            ServTimeDiff,
             DummySavedVariable
         };
     }

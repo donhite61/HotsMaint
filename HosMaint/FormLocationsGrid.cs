@@ -61,9 +61,15 @@ namespace HotsMaint
 
         private void DgvCell_DoubleClick(object sender, EventArgs e)
         {
-            var row = dgv1.SelectedRows[0];
-            Form formEdit = new FormEdit(mod);
-            formEdit.Show();
+            Form editForm;
+            if (mod.EditFormName == "locations")
+                editForm = new FormEditBusiness(mod);
+            //else if(mod.EditFormName == "vendors")
+            else
+                editForm = new FormEditBusiness(mod);
+            editForm.Show();
+
+
         }
 
         private void Btn_Update_Click(object sender, EventArgs e)

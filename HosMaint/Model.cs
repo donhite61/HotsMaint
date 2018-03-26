@@ -50,7 +50,7 @@ namespace HotsMaint
         {
             Serv = server;
             Dset = new DataSet();
-            EditFormName = "EditLocations";
+            EditFormName = "locations";
 
             var table = MakeNewDataTable(GV.TblName.locations.ToString());
             FillTable(table);
@@ -132,6 +132,9 @@ namespace HotsMaint
             //todo
             //if Child records exist
             // e.Cancel = true
+
+            // if code has been changed it must cascade to all child records
+
             var cmd = new MySqlCommand();
             cmd.CommandText = "DELETE FROM locations" +
                              " WHERE loc_Id = ?Id";
@@ -144,32 +147,8 @@ namespace HotsMaint
         {
             var cmd = new MySqlCommand();
             cmd.CommandText = "INSERT INTO locations " +
-                        "(loc_Code,loc_Name,loc_Address,loc_Address2,loc_City,loc_State,loc_Zip,loc_Phone,loc_Email,loc_Inactive)" +
-                        "Values(?Code,?Name,?Add,?Add2,?City,?State,?Zip,?Phone,?Email,?Inactive)";
-
-            AddCommandParams(cmd, _row);
-            var result = Serv.ExecuteMySQLNonQuery(cmd);
-            UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
-            return mySqlId;
-        }
-
-        internal override bool UpdateRecord(DataRow _row)
-        {
-            var cmd = new MySqlCommand();
-            cmd.CommandText = "UPDATE locations " +
-                    "SET loc_Code=?Code,loc_Name=?Name,loc_Address=?Add,loc_Address2=?Add2,loc_City=?City," +
-                    "loc_State=?State,loc_Zip=?Zip,loc_Phone=?Phone,loc_Email=?Email,loc_Inactive=?Inactive " +
-                    "WHERE loc_Id = ?Id";
-
-            AddCommandParams(cmd, _row);
-            var result = Serv.ExecuteMySQLNonQuery(cmd);
-            return (Convert.ToInt32(result) > 0) ? true : false;
-        }
-
-        private MySqlCommand AddCommandParams(MySqlCommand cmd, DataRow _row)
-        {
-            if (!_row.ItemArray[0].Equals(System.DBNull.Value))
-                cmd.Parameters.AddWithValue("?Id", Convert.ToUInt32(_row.ItemArray[0]));
+                        "(loc_Code,loc_Name,loc_Address,loc_Address2,loc_City,loc_State,loc_Zip,loc_Phone,loc_Email,loc_Inactive,loc_Timestamp)" +
+                        "Values(?Code,?Name,?Add,?Add2,?City,?State,?Zip,?Phone,?Email,?Inactive,?Timestamp)";
 
             cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
             cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
@@ -181,9 +160,44 @@ namespace HotsMaint
             cmd.Parameters.AddWithValue("?Phone", _row.ItemArray[8].ToString());
             cmd.Parameters.AddWithValue("?Email", _row.ItemArray[9].ToString());
             cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[10]));
-            return cmd;
+            var dt = DateTime.Now.AddSeconds(GV.ServTimeDiff);
+            cmd.Parameters.AddWithValue("?Timestamp", DateTime.Now.AddSeconds(GV.ServTimeDiff));
+
+            var result = Serv.ExecuteMySQLNonQuery(cmd);
+            UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
+            return mySqlId;
         }
 
+        internal override bool UpdateRecord(DataRow _row)
+        {
+            // if code has been changed it must cascade to all child records
+
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "UPDATE locations " +
+                    "SET loc_Code=?Code,loc_Name=?Name,loc_Address=?Add,loc_Address2=?Add2,loc_City=?City," +
+                    "loc_State=?State,loc_Zip=?Zip,loc_Phone=?Phone,loc_Email=?Email,loc_Inactive=?Inactive,loc_Timestamp=?Timestamp " +
+                    "WHERE loc_Id = ?Id";
+
+            if (!_row.ItemArray[0].Equals(System.DBNull.Value))
+                cmd.Parameters.AddWithValue("?Id", Convert.ToUInt32(_row.ItemArray[0]));
+            else
+                throw new Exception();
+
+            cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
+            cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
+            cmd.Parameters.AddWithValue("?Add", _row.ItemArray[3].ToString());
+            cmd.Parameters.AddWithValue("?Add2", _row.ItemArray[4].ToString());
+            cmd.Parameters.AddWithValue("?City", _row.ItemArray[5].ToString());
+            cmd.Parameters.AddWithValue("?State", _row.ItemArray[6].ToString());
+            cmd.Parameters.AddWithValue("?Zip", _row.ItemArray[7].ToString());
+            cmd.Parameters.AddWithValue("?Phone", _row.ItemArray[8].ToString());
+            cmd.Parameters.AddWithValue("?Email", _row.ItemArray[9].ToString());
+            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[10]));
+            cmd.Parameters.AddWithValue("?Timestamp", DateTime.Now.AddSeconds(GV.ServTimeDiff));
+
+            var result = Serv.ExecuteMySQLNonQuery(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
+        }
     }
 
     public class VendorsModel : Model
@@ -198,7 +212,7 @@ namespace HotsMaint
         {
             Serv = server;
             Dset = new DataSet();
-            EditFormName = "EditVendors";
+            //EditForm = EditForm = new FormEditBusiness(this);
 
             var table = MakeNewDataTable(GV.TblName.vendors.ToString());
             FillTable(table);
@@ -292,32 +306,8 @@ namespace HotsMaint
         {
             var cmd = new MySqlCommand();
             cmd.CommandText = "INSERT INTO vendors " +
-                        "(ven_Code,ven_Name,ven_Address,ven_Address2,ven_City,ven_State,ven_Zip,ven_Phone,ven_Email,ven_Inactive)" +
-                        "Values(?Code,?Name,?Add,?Add2,?City,?State,?Zip,?Phone,?Email,?Inactive)";
-
-            AddCommandParams(cmd, _row);
-            var result = Serv.ExecuteMySQLNonQuery(cmd);
-            UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
-            return mySqlId;
-        }
-
-        internal override bool UpdateRecord(DataRow _row)
-        {
-            var cmd = new MySqlCommand();
-            cmd.CommandText = "UPDATE vendors " +
-                    "SET ven_Code=?Code,ven_Name=?Name,ven_Address=?Add,ven_Address2=?Add2,ven_City=?City," +
-                    "ven_State=?State,ven_Zip=?Zip,ven_Phone=?Phone,ven_Email=?Email,ven_Inactive=?Inactive " +
-                    "WHERE ven_Id = ?Id";
-
-            AddCommandParams(cmd, _row);
-            var result = Serv.ExecuteMySQLNonQuery(cmd);
-            return (Convert.ToInt32(result) > 0) ? true : false;
-        }
-
-        private MySqlCommand AddCommandParams(MySqlCommand cmd, DataRow _row)
-        {
-            if (!_row.ItemArray[0].Equals(System.DBNull.Value))
-                cmd.Parameters.AddWithValue("?Id", Convert.ToUInt32(_row.ItemArray[0]));
+                        "(ven_Code,ven_Name,ven_Address,ven_Address2,ven_City,ven_State,ven_Zip,ven_Phone,ven_Email,ven_Inactive,ven_Timestamp)" +
+                        "Values(?Code,?Name,?Add,?Add2,?City,?State,?Zip,?Phone,?Email,?Inactive,?Timestamp)";
 
             cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
             cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
@@ -329,9 +319,41 @@ namespace HotsMaint
             cmd.Parameters.AddWithValue("?Phone", _row.ItemArray[8].ToString());
             cmd.Parameters.AddWithValue("?Email", _row.ItemArray[9].ToString());
             cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[10]));
-            return cmd;
+            cmd.Parameters.AddWithValue("?Timestamp", DateTime.Now.AddSeconds(GV.ServTimeDiff));
+
+            var result = Serv.ExecuteMySQLNonQuery(cmd);
+            UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
+            return mySqlId;
         }
 
+        internal override bool UpdateRecord(DataRow _row)
+        {
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "UPDATE vendors " +
+                    "SET ven_Code=?Code,ven_Name=?Name,ven_Address=?Add,ven_Address2=?Add2,ven_City=?City," +
+                    "ven_State=?State,ven_Zip=?Zip,ven_Phone=?Phone,ven_Email=?Email,ven_Inactive=?Inactive,ven_Timestamp=?Timestamp " +
+                    "WHERE ven_Id = ?Id";
+
+            if (!_row.ItemArray[0].Equals(System.DBNull.Value))
+                cmd.Parameters.AddWithValue("?Id", Convert.ToUInt32(_row.ItemArray[0]));
+            else
+                throw new Exception();
+
+            cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
+            cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
+            cmd.Parameters.AddWithValue("?Add", _row.ItemArray[3].ToString());
+            cmd.Parameters.AddWithValue("?Add2", _row.ItemArray[4].ToString());
+            cmd.Parameters.AddWithValue("?City", _row.ItemArray[5].ToString());
+            cmd.Parameters.AddWithValue("?State", _row.ItemArray[6].ToString());
+            cmd.Parameters.AddWithValue("?Zip", _row.ItemArray[7].ToString());
+            cmd.Parameters.AddWithValue("?Phone", _row.ItemArray[8].ToString());
+            cmd.Parameters.AddWithValue("?Email", _row.ItemArray[9].ToString());
+            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[10]));
+            cmd.Parameters.AddWithValue("?Timestamp", DateTime.Now.AddSeconds(GV.ServTimeDiff));
+
+            var result = Serv.ExecuteMySQLNonQuery(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
+        }
     }
 
     public class VendProdModel : Model
@@ -346,7 +368,7 @@ namespace HotsMaint
         {
             Serv = server;
             Dset = new DataSet();
-            EditFormName = "EditVproducts";
+            //EditForm = EditForm = new FormEditBusiness(this);
 
             var table = MakeNewDataTable(GV.TblName.vendProducts.ToString());
             FillTable(table);
@@ -365,7 +387,7 @@ namespace HotsMaint
             table.Columns.Add("Id", typeof(UInt32));
             table.Columns.Add("Code", typeof(string));
             table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("Description", typeof(string));
+            table.Columns.Add("VendCode", typeof(string));
             table.Columns.Add("Price", typeof(decimal));
             table.Columns.Add("Quantity", typeof(decimal));
             table.Columns.Add("Units", typeof(string));
@@ -393,14 +415,11 @@ namespace HotsMaint
                         row[1] = SafeGetString(rd, 1);
                         row[2] = SafeGetString(rd, 2);
                         row[3] = SafeGetString(rd, 3);
-                        row[4] = SafeGetString(rd, 4);
-                        row[5] = SafeGetString(rd, 5);
+                        row[4] = rd.GetDecimal(4);
+                        row[5] = rd.GetDecimal(5);
                         row[6] = SafeGetString(rd, 6);
-                        row[7] = SafeGetString(rd, 7);
-                        row[8] = SafeGetString(rd, 8);
-                        row[9] = SafeGetString(rd, 9);
-                        row[10] = SafeGetBool(rd, 10);
-                        row[11] = rd.GetDateTime(11);
+                        row[10] = SafeGetBool(rd, 7);
+                        row[11] = rd.GetDateTime(8);
                         tbl.Rows.Add(row);
                     }
                     tbl.AcceptChanges();
@@ -437,10 +456,18 @@ namespace HotsMaint
         {
             var cmd = new MySqlCommand();
             cmd.CommandText = "INSERT INTO vendProducts " +
-                        "(vProd_Code,vProd_Name,vProd_Description,vProd_Price,vProd_Quant,vProd_Units,vProd_Inactive)" +
-                        "Values(?Code,?Name,?Desc,?Price,?Quant,?Units,?Inactive)";
+                        "(vProd_Code,vProd_Name,vProd_VendCode,vProd_Price,vProd_Quant,vProd_Units,vProd_Inactive,vPRod_Timestamp)" +
+                        "Values(?Code,?Name,?VendCode,?Price,?Quant,?Units,?Inactive,?Timestamp)";
 
-            AddCommandParams(cmd, _row);
+            cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
+            cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
+            cmd.Parameters.AddWithValue("?VendCode", _row.ItemArray[3].ToString());
+            cmd.Parameters.AddWithValue("?Price", Convert.ToDecimal(_row.ItemArray[4]));
+            cmd.Parameters.AddWithValue("?Quant", Convert.ToDecimal(_row.ItemArray[5]));
+            cmd.Parameters.AddWithValue("?Units", _row.ItemArray[6].ToString());
+            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[7]));
+            cmd.Parameters.AddWithValue("?Timestamp", DateTime.Now.AddSeconds(GV.ServTimeDiff));
+
             var result = Serv.ExecuteMySQLNonQuery(cmd);
             UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
             return mySqlId;
@@ -449,32 +476,27 @@ namespace HotsMaint
         internal override bool UpdateRecord(DataRow _row)
         {
             var cmd = new MySqlCommand();
-            cmd.CommandText = "UPDATE locations " +
-                    "SET vProd_Code=?Code,vProd_Name=?Name,vProd_Description=?Desc,vProd_Price=?Price,vProd_Quant=?Quant," +
-                    "vProd_Units=?Units,vProd_Inactive=?Inactive " +
+            cmd.CommandText = "UPDATE vendProducts " +
+                    "SET vProd_Code=?Code,vProd_Name=?Name,vProd_VendCode==VendCode,vProd_Price=?Price,vProd_Quant=?Quant," +
+                    "vProd_Units=?Units,vProd_Inactive=?Inactive,vProd_Timestamp=?Timestamp " +
                     "WHERE vProd_Id = ?Id";
 
-            AddCommandParams(cmd, _row);
-            var result = Serv.ExecuteMySQLNonQuery(cmd);
-            return (Convert.ToInt32(result) > 0) ? true : false;
-        }
-
-        private MySqlCommand AddCommandParams(MySqlCommand cmd, DataRow _row)
-        {
             if (!_row.ItemArray[0].Equals(System.DBNull.Value))
                 cmd.Parameters.AddWithValue("?Id", Convert.ToUInt32(_row.ItemArray[0]));
+            else
+                throw new Exception();
 
             cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
             cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
-            cmd.Parameters.AddWithValue("?Add", _row.ItemArray[3].ToString());
-            cmd.Parameters.AddWithValue("?Add2", _row.ItemArray[4].ToString());
-            cmd.Parameters.AddWithValue("?City", _row.ItemArray[5].ToString());
-            cmd.Parameters.AddWithValue("?State", _row.ItemArray[6].ToString());
-            cmd.Parameters.AddWithValue("?Zip", _row.ItemArray[7].ToString());
-            cmd.Parameters.AddWithValue("?Phone", _row.ItemArray[8].ToString());
-            cmd.Parameters.AddWithValue("?Email", _row.ItemArray[9].ToString());
-            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[10]));
-            return cmd;
+            cmd.Parameters.AddWithValue("?VendCode", _row.ItemArray[3].ToString());
+            cmd.Parameters.AddWithValue("?Price", Convert.ToDecimal(_row.ItemArray[4]));
+            cmd.Parameters.AddWithValue("?Quant", Convert.ToDecimal(_row.ItemArray[5]));
+            cmd.Parameters.AddWithValue("?Units", _row.ItemArray[6].ToString());
+            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[7]));
+            cmd.Parameters.AddWithValue("?Timestamp", DateTime.Now.AddSeconds(GV.ServTimeDiff));
+
+            var result = Serv.ExecuteMySQLNonQuery(cmd);
+            return (Convert.ToInt32(result) > 0) ? true : false;
         }
     }
 

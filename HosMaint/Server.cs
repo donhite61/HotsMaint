@@ -12,30 +12,9 @@ namespace HotsMaint
     public abstract class Server
     {
         public abstract string ConnString { get; set; }
-        public abstract TimeSpan ServOffset { get; set; }
 
         internal abstract void DeleteAndCreateTablesOnServer(UInt32 startNumber);
 
-        internal TimeSpan GetServerOffset()
-        {
-            var cmd = new MySqlCommand();
-            cmd.CommandText = "SELECT NOW() FROM DUAL";
-            var result = ExecuteMySqlScaler(cmd);
-            DateTime webTime;
-            DateTime.TryParse(result.ToString(), out webTime);
-            DateTime localTime = DateTime.Now;
-
-            if (DateTime.Compare(localTime, webTime) < 0)
-                return localTime - webTime;
-            else
-                return (localTime - webTime).Negate();
-        }
-
-        internal void WriteServerOffsetToVariablesTable()
-        {
-            var a = ServOffset;
-            //throw new NotImplementedException();
-        }
 
         internal object ExecuteMySQLNonQuery(MySqlCommand cmd)
         {
@@ -56,32 +35,45 @@ namespace HotsMaint
                 return cmd.ExecuteScalar();
             }
         }
-
-        public string SafeGetString(MySqlDataReader reader, int colIndex)
-        {
-            if (!reader.IsDBNull(colIndex))
-                return reader.GetString(colIndex);
-            return string.Empty;
-        }
-        public bool SafeGetBool(MySqlDataReader reader, int colIndex)
-        {
-            if (!reader.IsDBNull(colIndex))
-                return reader.GetBoolean(colIndex);
-            return false;
-        }
     }
 
     public class ServerLocal : Server
     {
         public override string ConnString { get; set; }
-        public override TimeSpan ServOffset { get; set; }
 
         public ServerLocal()
         {
             ConnString = "server=localhost;user=root;database=hitephot_pos;port=3306;password=6716;";
-            ServOffset = GetServerOffset();
-            WriteServerOffsetToVariablesTable();
+        }
 
+        internal void WriteVariableToServer(string key, object value)
+        {
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "INSERT INTO variables(var_Value,var_Key) Values(?value,?key)" +
+                            "ON DUPLICATE KEY UPDATE var_Value = ?value";
+
+            cmd.Parameters.AddWithValue("?key", key);
+            cmd.Parameters.AddWithValue("?value", value.ToString());
+
+            var result = GV.SerLoc.ExecuteMySQLNonQuery(cmd);
+        }
+
+        internal string ReadVariableFromServer(string key)
+        {
+            object result;
+            var sql = "SELECT var_Value FROM variables WHERE var_Key = ?key";
+            using (var conn = new MySqlConnection(ConnString))
+            using (var cmd = new MySqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("?key", key);
+                conn.Open();
+                result = cmd.ExecuteScalar();
+                
+            }
+            if (result != null)
+                return result.ToString();
+            else
+                throw new Exception();
         }
 
         internal override void DeleteAndCreateTablesOnServer(UInt32 startNumber)
@@ -109,7 +101,7 @@ namespace HotsMaint
                 DeleteAndCreateVendProdTableOnServer(startNumber);
         }
 
-        public void DeleteAndCreateSvdVariablesTableOnServer()
+        private void DeleteAndCreateSvdVariablesTableOnServer()
         {
             var cmd = new MySqlCommand(ConnString);
             cmd.CommandText = " DROP TABLE IF EXISTS variables";
@@ -121,7 +113,7 @@ namespace HotsMaint
             ExecuteMySQLNonQuery(cmd);
         }
 
-        public void DeleteAndCreateLocationsTableOnServer(UInt32 startNumber)
+        private void DeleteAndCreateLocationsTableOnServer(UInt32 startNumber)
         {
             var cmd = new MySqlCommand(ConnString);
             cmd.CommandText = " DROP TABLE IF EXISTS locations";
@@ -146,7 +138,7 @@ namespace HotsMaint
             ExecuteMySQLNonQuery(cmd);
         }
 
-        public void DeleteAndCreateVendorsTableOnServer(UInt32 startNumber)
+        private void DeleteAndCreateVendorsTableOnServer(UInt32 startNumber)
         {
             var cmd = new MySqlCommand();
             cmd.CommandText = " DROP TABLE IF EXISTS vendors";
@@ -171,7 +163,7 @@ namespace HotsMaint
             ExecuteMySQLNonQuery(cmd);
         }
 
-        public void DeleteAndCreateVendProdTableOnServer(UInt32 startNumber)
+        private void DeleteAndCreateVendProdTableOnServer(UInt32 startNumber)
         {
             var cmd = new MySqlCommand();
             cmd.CommandText = " DROP TABLE IF EXISTS vendProducts";
@@ -198,15 +190,36 @@ namespace HotsMaint
     public class ServerWeb : Server
     {
         public override string ConnString { get; set; }
-        public override TimeSpan ServOffset { get; set; }
-        //todo need to save this in case internet goes out
 
 
         public ServerWeb()
         {
             ConnString = "server=69.89.31.188;user=hitephot_don;database=hitephot_pos;port=3306;password=Hite1985;";
-            ServOffset = GetServerOffset();
-            WriteServerOffsetToVariablesTable();
+        }
+
+        internal double GetServerOffsetInSeconds()
+        {
+            var cmd = new MySqlCommand();
+            cmd.CommandText = "SELECT NOW() FROM DUAL";
+            var result = ExecuteMySqlScaler(cmd);
+            DateTime localTime = DateTime.Now;
+            DateTime webTime = DateTime.MinValue;
+            if(DateTime.TryParse(result.ToString(), out webTime))
+            {
+                if (DateTime.Compare(localTime, webTime) > 0)
+                    return (webTime - localTime).TotalSeconds;
+                else
+                    return (localTime - webTime).TotalSeconds;
+            }
+            else // if failed to get server time, retrieve last stored value
+            {
+                var  offsetString = GV.SerLoc.ReadVariableFromServer(GV.SvdVariables.ServTimeDiff.ToString());
+                double offsetInt;
+                if (double.TryParse(offsetString, out offsetInt))
+                    return offsetInt;
+                else // no stored value returm 0
+                    return 0;
+            }
         }
 
         internal override void DeleteAndCreateTablesOnServer(UInt32 startNumber)
@@ -227,7 +240,7 @@ namespace HotsMaint
                 DeleteAndCreateVendProdTableOnServer();
         }
 
-        public void DeleteAndCreateLocationsTableOnServer()
+        private void DeleteAndCreateLocationsTableOnServer()
         {
             var cmd = new MySqlCommand(ConnString);
             cmd.CommandText = " DROP TABLE IF EXISTS locations";
@@ -249,7 +262,7 @@ namespace HotsMaint
             ExecuteMySQLNonQuery(cmd);
         }
 
-        public void DeleteAndCreateVendorsTableOnServer()
+        private void DeleteAndCreateVendorsTableOnServer()
         {
             var cmd = new MySqlCommand();
             cmd.CommandText = " DROP TABLE IF EXISTS vendors";
@@ -271,7 +284,7 @@ namespace HotsMaint
             ExecuteMySQLNonQuery(cmd);
         }
 
-        public void DeleteAndCreateVendProdTableOnServer()
+        private void DeleteAndCreateVendProdTableOnServer()
         {
             var cmd = new MySqlCommand();
             cmd.CommandText = " DROP TABLE IF EXISTS vendProducts";
@@ -281,7 +294,7 @@ namespace HotsMaint
                                 "vProd_Id int UNSIGNED NOT NULL PRIMARY KEY," +
                                 "vProd_Code VARCHAR(20) UNIQUE NOT NULL," +
                                 "vProd_Name VARCHAR(100) NOT NULL DEFAULT ''," +
-                                "vProd_Description VARCHAR(100) NOT NULL DEFAULT ''," +
+                                "vProd_VendCode VARCHAR(100) NOT NULL DEFAULT ''," +
                                 "vProd_Price DECIMAL(10,2)," +
                                 "vProd_Quant DECIMAL(10,2)," +
                                 "vProd_Units VARCHAR(20)," +
