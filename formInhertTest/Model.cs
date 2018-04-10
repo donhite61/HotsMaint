@@ -385,11 +385,11 @@ namespace FormInhertTest
         {
             Serv = server;
             Dset = new DataSet();
-            //EditForm = EditForm = new FormEditBusiness(this);
 
             var table = MakeNewDataTable(GV.TblName.vendProducts.ToString());
             FillTable(table);
             Dset.Tables.Add(table);
+
             BSource = new BindingSource()
             {
                 DataSource = Dset,
@@ -403,14 +403,17 @@ namespace FormInhertTest
             var table = new DataTable { TableName = _tableName };
             table.Columns.Add("Id", typeof(UInt32));
             table.Columns.Add("Code", typeof(string));
-            table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("VendCode", typeof(string));
+            table.Columns.Add("Description", typeof(string));
             table.Columns.Add("Price", typeof(decimal));
             table.Columns.Add("Quantity", typeof(decimal));
             table.Columns.Add("Units", typeof(string));
+            table.Columns.Add("VenId", typeof(UInt32));
+            table.Columns.Add("VendCatNum", typeof(string));
             table.Columns.Add("Inactive", typeof(Boolean));
             table.Columns["Inactive"].DefaultValue = false;
             table.Columns.Add("Timestamp", typeof(DateTime));
+
+
             return table;
         }
 
@@ -432,12 +435,13 @@ namespace FormInhertTest
                         row[0] = rd.GetUInt32(0);
                         row[1] = SafeGetString(rd, 1);
                         row[2] = SafeGetString(rd, 2);
-                        row[3] = SafeGetString(rd, 3);
+                        row[3] = rd.GetDecimal(3);
                         row[4] = rd.GetDecimal(4);
-                        row[5] = rd.GetDecimal(5);
-                        row[6] = SafeGetString(rd, 6);
-                        row[10] = SafeGetBool(rd, 7);
-                        row[11] = rd.GetDateTime(8);
+                        row[5] = SafeGetString(rd, 5);
+                        row[6] = rd.GetUInt32(6);
+                        row[7] = SafeGetString(rd, 7);
+                        row[8] = SafeGetBool(rd, 8);
+                        row[9] = rd.GetDateTime(9);
                         tbl.Rows.Add(row);
                     }
                     tbl.AcceptChanges();
@@ -479,18 +483,20 @@ namespace FormInhertTest
             var cmd = new MySqlCommand
             {
                 CommandText = "INSERT INTO vendProducts " +
-                        "(vProd_Code,vProd_Name,vProd_VendCode,vProd_Price,vProd_Quant,vProd_Units,vProd_Inactive,vPRod_Timestamp)" +
-                        "Values(?Code,?Name,?VendCode,?Price,?Quant,?Units,?Inactive,?Timestamp)"
+                        "(vProd_Code,vProd_Description,vProd_Price,vProd_Quant,vProd_Units,VProd_VenId,vProd_CatNum,vProd_Inactive,vPRod_Timestamp)" +
+                        "Values(?Code,?Desc,?Price,?Quant,?Units,?VenId,?VendCat,?Inactive,?Timestamp)"
             };
 
             cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
-            cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
-            cmd.Parameters.AddWithValue("?VendCode", _row.ItemArray[3].ToString());
-            cmd.Parameters.AddWithValue("?Price", Convert.ToDecimal(_row.ItemArray[4]));
-            cmd.Parameters.AddWithValue("?Quant", Convert.ToDecimal(_row.ItemArray[5]));
-            cmd.Parameters.AddWithValue("?Units", _row.ItemArray[6].ToString());
-            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[7]));
+            cmd.Parameters.AddWithValue("?Desc", _row.ItemArray[2].ToString());
+            cmd.Parameters.AddWithValue("?Price", Convert.ToDecimal(_row.ItemArray[3]));
+            cmd.Parameters.AddWithValue("?Quant", Convert.ToDecimal(_row.ItemArray[4]));
+            cmd.Parameters.AddWithValue("?Units", _row.ItemArray[5].ToString());
+            cmd.Parameters.AddWithValue("?VenId", Convert.ToUInt32(_row.ItemArray[6]));
+            cmd.Parameters.AddWithValue("?VenCat", _row.ItemArray[7].ToString());
+            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[8]));
             cmd.Parameters.AddWithValue("?Timestamp", DateTime.Now.AddSeconds(GV.ServTimeDiff));
+
 
             var result = Serv.ExecuteMySQLNonQuery(cmd);
             UInt32 mySqlId = Convert.ToUInt32(cmd.LastInsertedId);
@@ -502,23 +508,20 @@ namespace FormInhertTest
             var cmd = new MySqlCommand
             {
                 CommandText = "UPDATE vendProducts " +
-                    "SET vProd_Code=?Code,vProd_Name=?Name,vProd_VendCode==VendCode,vProd_Price=?Price,vProd_Quant=?Quant," +
-                    "vProd_Units=?Units,vProd_Inactive=?Inactive,vProd_Timestamp=?Timestamp " +
+                    "SET vProd_Code=?Code,vProd_Description=?Desc,vProd_Price=?Price,vProd_Quant=?Quant,vProd_Units=?Units," +
+                    "vProd_Id=?VenId,vProd_VenCatNum=VendCat,vProd_Inactive=?Inactive,vProd_Timestamp=?Timestamp " +
                     "WHERE vProd_Id = ?Id"
             };
 
-            if (!_row.ItemArray[0].Equals(System.DBNull.Value))
-                cmd.Parameters.AddWithValue("?Id", Convert.ToUInt32(_row.ItemArray[0]));
-            else
-                throw new Exception();
-
+            cmd.Parameters.AddWithValue("?Id", Convert.ToUInt32(_row.ItemArray[0]));
             cmd.Parameters.AddWithValue("?Code", _row.ItemArray[1].ToString());
-            cmd.Parameters.AddWithValue("?Name", _row[2].ToString());
-            cmd.Parameters.AddWithValue("?VendCode", _row.ItemArray[3].ToString());
-            cmd.Parameters.AddWithValue("?Price", Convert.ToDecimal(_row.ItemArray[4]));
-            cmd.Parameters.AddWithValue("?Quant", Convert.ToDecimal(_row.ItemArray[5]));
-            cmd.Parameters.AddWithValue("?Units", _row.ItemArray[6].ToString());
-            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[7]));
+            cmd.Parameters.AddWithValue("?Desc", _row.ItemArray[2].ToString());
+            cmd.Parameters.AddWithValue("?Price", Convert.ToDecimal(_row.ItemArray[3]));
+            cmd.Parameters.AddWithValue("?Quant", Convert.ToDecimal(_row.ItemArray[4]));
+            cmd.Parameters.AddWithValue("?Units", _row.ItemArray[5].ToString());
+            cmd.Parameters.AddWithValue("?VenId", Convert.ToUInt32(_row.ItemArray[6]));
+            cmd.Parameters.AddWithValue("?VenCat", _row.ItemArray[7].ToString());
+            cmd.Parameters.AddWithValue("?Inactive", Convert.ToBoolean(_row.ItemArray[8]));
             cmd.Parameters.AddWithValue("?Timestamp", DateTime.Now.AddSeconds(GV.ServTimeDiff));
 
             var result = Serv.ExecuteMySQLNonQuery(cmd);

@@ -64,6 +64,12 @@
     <Compile Include="FormEditVendors.Designer.cs">
       <DependentUpon>FormEditVendors.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormEditVenProducts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormEditVenProducts.Designer.cs">
+      <DependentUpon>FormEditVenProducts.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormGridBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +81,12 @@
     </Compile>
     <Compile Include="FormGridLocations.Designer.cs">
       <DependentUpon>FormGridLocations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormGridSubBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGridSubBase.Designer.cs">
+      <DependentUpon>FormGridSubBase.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMenu.cs">
       <SubType>Form</SubType>
@@ -102,11 +114,17 @@
     <EmbeddedResource Include="FormEditVendors.resx">
       <DependentUpon>FormEditVendors.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormEditVenProducts.resx">
+      <DependentUpon>FormEditVenProducts.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormGridBase.resx">
       <DependentUpon>FormGridBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormGridLocations.resx">
       <DependentUpon>FormGridLocations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormGridSubBase.resx">
+      <DependentUpon>FormGridSubBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMenu.resx">
       <DependentUpon>FormMenu.cs</DependentUpon>

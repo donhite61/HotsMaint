@@ -194,12 +194,13 @@ namespace FormInhertTest
             cmd.CommandText = "CREATE TABLE vendProducts(" +
                                 "vProd_Id int UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT," +
                                 "vProd_Code VARCHAR(20) UNIQUE NOT NULL," +
-                                "vProd_Name VARCHAR(100) NOT NULL DEFAULT ''," +
-                                "vProd_Description VARCHAR(100) NOT NULL DEFAULT ''," +
+                                "vProd_Description VARCHAR(100) DEFAULT ''," +
                                 "vProd_Price DECIMAL(10,2)," +
                                 "vProd_Quant DECIMAL(10,2)," +
                                 "vProd_Units VARCHAR(20)," +
-                                "vProd_Inactive TINYINT(4) NOT NULL DEFAULT '0'," +
+                                "vProd_VenId int UNSIGNED NOT NULL ," +
+                                "vProd_CatNum VARCHAR(20)," +
+                                 "vProd_Inactive TINYINT(4) NOT NULL DEFAULT '0'," +
                                 "vProd_Timestamp TIMESTAMP )";
             ExecuteMySQLNonQuery(cmd);
 

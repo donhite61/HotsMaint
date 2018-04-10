@@ -230,7 +230,6 @@
             // 
             // FormEditLocations
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.ClientSize = new System.Drawing.Size(437, 343);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.lbl_Timestamp);
@@ -255,27 +254,6 @@
             this.Controls.Add(this.lbl_Id);
             this.Name = "FormEditLocations";
             this.Load += new System.EventHandler(this.FormEditLocations_Load);
-            this.Controls.SetChildIndex(this.lbl_Id, 0);
-            this.Controls.SetChildIndex(this.label8, 0);
-            this.Controls.SetChildIndex(this.txtbx_Code, 0);
-            this.Controls.SetChildIndex(this.label1, 0);
-            this.Controls.SetChildIndex(this.label2, 0);
-            this.Controls.SetChildIndex(this.txtbx_Name, 0);
-            this.Controls.SetChildIndex(this.label3, 0);
-            this.Controls.SetChildIndex(this.txtbx_Add1, 0);
-            this.Controls.SetChildIndex(this.label4, 0);
-            this.Controls.SetChildIndex(this.txtbx_Add2, 0);
-            this.Controls.SetChildIndex(this.label6, 0);
-            this.Controls.SetChildIndex(this.label7, 0);
-            this.Controls.SetChildIndex(this.txtbx_Email, 0);
-            this.Controls.SetChildIndex(this.label5, 0);
-            this.Controls.SetChildIndex(this.txtbx_City, 0);
-            this.Controls.SetChildIndex(this.txtbx_State, 0);
-            this.Controls.SetChildIndex(this.chkbx_Inactive, 0);
-            this.Controls.SetChildIndex(this.txtbx_Phone, 0);
-            this.Controls.SetChildIndex(this.txtbx_Zip, 0);
-            this.Controls.SetChildIndex(this.lbl_Timestamp, 0);
-            this.Controls.SetChildIndex(this.label9, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 

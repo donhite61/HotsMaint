@@ -40,6 +40,5 @@ namespace FormInhertTest
             txtbx_Phone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
             txtbx_Code.Validating += new CancelEventHandler(Txtbx_Code_Validating);
         }
-
     }
 }

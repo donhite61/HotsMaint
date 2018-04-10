@@ -43,7 +43,14 @@ namespace FormInhertTest
 
             txtbx_Phone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
             txtbx_Code.Validating += new CancelEventHandler(Txtbx_Code_Validating);
+            btn_VenProducts.Click += new EventHandler(Btn_VenProducts_Click);
         }
 
+        private void Btn_VenProducts_Click(object sender, EventArgs e)
+        {
+            var childMod = new VendProdModel(mod.Serv);
+            var form = new FormGridSubBase(childMod, mod);
+            form.Show();
+        }
     }
 }

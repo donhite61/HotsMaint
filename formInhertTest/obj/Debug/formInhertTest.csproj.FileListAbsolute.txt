@@ -16,3 +16,5 @@ D:\Dad\Documents\CSharp\Tests\formInhertTest\formInhertTest\obj\Debug\formInhert
 D:\Dad\Documents\CSharp\Tests\formInhertTest\formInhertTest\obj\Debug\formInhertTest.FormEditVendors.resources
 D:\Dad\Documents\CSharp\Tests\formInhertTest\formInhertTest\obj\Debug\formInhertTest.FormEditBase.resources
 D:\Dad\Documents\CSharp\Tests\formInhertTest\formInhertTest\obj\Debug\formInhertTest.csprojResolveAssemblyReference.cache
+D:\Dad\Documents\CSharp\Tests\formInhertTest\formInhertTest\obj\Debug\FormInhertTest.FormEditVenProducts.resources
+D:\Dad\Documents\CSharp\Tests\formInhertTest\formInhertTest\obj\Debug\FormInhertTest.FormGridSubBase.resources

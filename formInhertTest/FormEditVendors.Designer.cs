@@ -49,6 +49,7 @@
             this.txtbx_Code = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.lbl_Id = new System.Windows.Forms.Label();
+            this.btn_VenProducts = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label9
@@ -228,10 +229,19 @@
             this.lbl_Id.TabIndex = 88;
             this.lbl_Id.Text = "Id";
             // 
+            // btn_VenProducts
+            // 
+            this.btn_VenProducts.Location = new System.Drawing.Point(442, 20);
+            this.btn_VenProducts.Name = "btn_VenProducts";
+            this.btn_VenProducts.Size = new System.Drawing.Size(97, 26);
+            this.btn_VenProducts.TabIndex = 102;
+            this.btn_VenProducts.Text = "Vendor Products";
+            this.btn_VenProducts.UseVisualStyleBackColor = true;
+            // 
             // FormEditVendors
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.ClientSize = new System.Drawing.Size(436, 336);
+            this.ClientSize = new System.Drawing.Size(566, 336);
+            this.Controls.Add(this.btn_VenProducts);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.lbl_Timestamp);
             this.Controls.Add(this.txtbx_Zip);
@@ -255,27 +265,6 @@
             this.Controls.Add(this.lbl_Id);
             this.Name = "FormEditVendors";
             this.Load += new System.EventHandler(this.FormEditVendors_Load);
-            this.Controls.SetChildIndex(this.lbl_Id, 0);
-            this.Controls.SetChildIndex(this.label8, 0);
-            this.Controls.SetChildIndex(this.txtbx_Code, 0);
-            this.Controls.SetChildIndex(this.label1, 0);
-            this.Controls.SetChildIndex(this.label2, 0);
-            this.Controls.SetChildIndex(this.txtbx_Name, 0);
-            this.Controls.SetChildIndex(this.label3, 0);
-            this.Controls.SetChildIndex(this.txtbx_Add1, 0);
-            this.Controls.SetChildIndex(this.label4, 0);
-            this.Controls.SetChildIndex(this.txtbx_Add2, 0);
-            this.Controls.SetChildIndex(this.label6, 0);
-            this.Controls.SetChildIndex(this.label7, 0);
-            this.Controls.SetChildIndex(this.txtbx_Email, 0);
-            this.Controls.SetChildIndex(this.label5, 0);
-            this.Controls.SetChildIndex(this.txtbx_City, 0);
-            this.Controls.SetChildIndex(this.txtbx_State, 0);
-            this.Controls.SetChildIndex(this.chkbx_Inactive, 0);
-            this.Controls.SetChildIndex(this.txtbx_Phone, 0);
-            this.Controls.SetChildIndex(this.txtbx_Zip, 0);
-            this.Controls.SetChildIndex(this.lbl_Timestamp, 0);
-            this.Controls.SetChildIndex(this.label9, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -304,5 +293,6 @@
         private System.Windows.Forms.TextBox txtbx_Code;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label lbl_Id;
+        private System.Windows.Forms.Button btn_VenProducts;
     }
 }

@@ -46,9 +46,9 @@ namespace FormInhertTest
 
         private void Btn_VenProducts_Click(object sender, EventArgs e)
         {
-            var serv = ReadServer();
-            var mod = new LocationsModel(serv);
-            //var form = new FormGridVenProducts(mod);
+            //var serv = ReadServer();
+            //var mod = new VendProdModel(serv);
+            //var form = new FormGridSubBase(mod);
             //form.Show();
         }
 
